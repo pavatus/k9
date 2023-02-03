@@ -13,16 +13,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class K9InventoryScreen extends ContainerScreen<K9InventoryContainer> {
     private static final ResourceLocation GUI = new ResourceLocation("textures/gui/container/k9_gui.png");
+    private final int containerRows;
     private float xMouse;
     private float yMouse;
-    private final int containerRows;
 
-    public K9InventoryScreen(K9InventoryContainer p_i51084_1_, PlayerInventory p_i51084_2_, ITextComponent textComponent) {
-        super(p_i51084_1_, p_i51084_2_,textComponent);
+    public K9InventoryScreen(K9InventoryContainer container, PlayerInventory inventory, ITextComponent text) {
+        super(container, inventory, text);
         this.passEvents = false;
-        int i = 222;
-        int j = 114;
-        this.containerRows = p_i51084_1_.getRowCount();
+        this.containerRows = container.getRowCount();
         this.imageHeight = 114 + this.containerRows * 18;
         this.inventoryLabelY = this.imageHeight - 94;
     }
