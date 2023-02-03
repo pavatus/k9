@@ -3,7 +3,6 @@ package com.mdt.k9mod.client.models.entities;// Made with Blockbench 3.9.2
 // Paste this class into your mod and generate all required imports
 
 
-import com.mdt.K9mod.K9mod;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -16,7 +15,7 @@ import net.minecraft.util.math.vector.Vector3f;
 
 public class K9EntityModel extends EntityModel<WolfEntity> {
 
-    public static final ResourceLocation LIGHTING = new ResourceLocation(K9mod.MOD_ID, "textures/entity/k9_emission.png");
+    public static final ResourceLocation LIGHTING = new ResourceLocation(com.mdt.K9mod.K9MOD.MOD_ID, "textures/entity/k9_emission.png");
 
     public final ModelRenderer Body;
     public final ModelRenderer Base;

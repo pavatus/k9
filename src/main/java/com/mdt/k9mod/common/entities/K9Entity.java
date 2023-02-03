@@ -2,7 +2,8 @@ package com.mdt.k9mod.common.entities;
 
 import com.mdt.k9mod.container.K9InventoryContainer;
 import com.mdt.k9mod.core.init.K9modSounds;
-import net.minecraft.command.impl.ForceLoadCommand;
+import com.mdt.k9mod.screen.K9InventoryScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -14,40 +15,129 @@ import net.minecraft.entity.monster.AbstractSkeletonEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.IInventoryChangedListener;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public class K9Entity extends WolfEntity {
+public class K9Entity extends WolfEntity implements IInventoryChangedListener {
+    public Inventory inventory;
+    private static final DataParameter<Byte> DATA_ID_FLAGS = EntityDataManager.defineId(K9Entity.class, DataSerializers.BYTE);
+    private net.minecraftforge.common.util.LazyOptional<?> itemHandler = null;
 
     public K9Entity(EntityType<K9Entity> entityEntityType, World world) {
         super(entityEntityType, world);
     }
 
-    private INamedContainerProvider createContainerProvider() {
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_ID_FLAGS, (byte)0);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundNBT p_213281_1_) {
+        super.addAdditionalSaveData(p_213281_1_);
+        ListNBT listnbt = new ListNBT();
+
+        for(int i = 2; i < this.inventory.getContainerSize(); ++i) {
+            ItemStack itemstack = this.inventory.getItem(i);
+            if (!itemstack.isEmpty()) {
+                CompoundNBT compoundnbt = new CompoundNBT();
+                compoundnbt.putByte("Slot", (byte)i);
+                itemstack.save(compoundnbt);
+                listnbt.add(compoundnbt);
+            }
+        }
+
+        p_213281_1_.put("Items", listnbt);
+    }
+    protected void setFlag(int p_110208_1_, boolean p_110208_2_) {
+        byte b0 = this.entityData.get(DATA_ID_FLAGS);
+        if (p_110208_2_) {
+            this.entityData.set(DATA_ID_FLAGS, (byte)(b0 | p_110208_1_));
+        } else {
+            this.entityData.set(DATA_ID_FLAGS, (byte)(b0 & ~p_110208_1_));
+        }
+
+    }
+    protected void updateContainerEquipment() {
+        if (!this.level.isClientSide) {
+            this.setFlag(4, (!this.inventory.getItem(0).isEmpty()));
+        }
+    }
+    @Override
+    public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
+        super.readAdditionalSaveData(p_70037_1_);
+        ListNBT listnbt = p_70037_1_.getList("Items", 10);
+        this.createInventory();
+
+        for(int i = 0; i < listnbt.size(); ++i) {
+            CompoundNBT compoundnbt = listnbt.getCompound(i);
+            int j = compoundnbt.getByte("Slot") & 255;
+            if (j >= 2 && j < this.inventory.getContainerSize()) {
+                this.inventory.setItem(j, ItemStack.of(compoundnbt));
+            }
+        }
+
+        this.updateContainerEquipment();
+    }
+
+    protected void createInventory() {
+        Inventory inventory = this.inventory;
+        this.inventory = new Inventory(2);
+        if (inventory != null) {
+            inventory.removeListener(this);
+            int i = Math.min(inventory.getContainerSize(), this.inventory.getContainerSize());
+
+            for(int j = 0; j < i; ++j) {
+                ItemStack itemstack = inventory.getItem(j);
+                if (!itemstack.isEmpty()) {
+                    this.inventory.setItem(j, itemstack.copy());
+                }
+            }
+        }
+
+        this.inventory.addListener(this);
+        this.updateContainerEquipment();
+        this.itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this.inventory));
+    }
+    public boolean setSlot(int p_174820_1_, ItemStack p_174820_2_) {
+        if (p_174820_1_ == 499) {
+            this.createInventory();
+            return true;
+        }
+
+        return super.setSlot(p_174820_1_, p_174820_2_);
+    }
+
+    private INamedContainerProvider createContainerProvider(Inventory inventory, K9Entity entity) {
         return new INamedContainerProvider() {
             @Override
             public ITextComponent getDisplayName() {
-                return new TranslationTextComponent("screen.k9mod.inventory");
+                return new TranslationTextComponent("screen.k9mod.k9_gui");
             }
 
             @Nullable
             @Override
             public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity player) {
-                return new K9InventoryContainer(ContainerType.GENERIC_9x3, i, playerInventory,3);
+                return new K9InventoryContainer(ContainerType.GENERIC_9x3,9, player.inventory, inventory,3,entity);
             }
         };
     }
@@ -108,6 +198,7 @@ public class K9Entity extends WolfEntity {
         return super.isFood(new ItemStack(Items.REDSTONE));
     }
 
+
     @Override
     public ActionResultType mobInteract(PlayerEntity pPlayer, Hand pHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
@@ -115,8 +206,20 @@ public class K9Entity extends WolfEntity {
         if (this.level.isClientSide) {
             boolean flag = this.isOwnedBy(pPlayer) || this.isTame() || item == Items.IRON_INGOT && !this.isTame() && !this.isAngry();
             return flag ? ActionResultType.CONSUME : ActionResultType.PASS;
+
         } else {
             if (this.isTame()) {
+
+                if (pPlayer.isCrouching()) {
+//                    System.out.println(this.inventory);
+//                    INamedContainerProvider containerProvider = createContainerProvider(this.inventory, this);
+//                    NetworkHooks.openGui((ServerPlayerEntity) pPlayer, containerProvider);
+                    System.out.println(inventory);
+                    K9InventoryContainer inventoryContainer = new K9InventoryContainer(ContainerType.GENERIC_9x3,1, pPlayer.inventory, this.inventory,3,this);
+                    pPlayer.containerMenu = inventoryContainer;
+                    Minecraft.getInstance().setScreen(new K9InventoryScreen(inventoryContainer, pPlayer.inventory,new TranslationTextComponent("screen.k9mod.inventory")));
+                }
+
                 if (this.isFood(itemstack) && this.getHealth() < this.getMaxHealth()) {
                     if (!pPlayer.abilities.instabuild) {
                         itemstack.shrink(1);
@@ -149,10 +252,6 @@ public class K9Entity extends WolfEntity {
                     return ActionResultType.SUCCESS;
                 }
 
-                if (pPlayer.isCrouching()) {
-                    INamedContainerProvider containerProvider = createContainerProvider();
-                    NetworkHooks.openGui((ServerPlayerEntity) pPlayer,containerProvider);
-                }
             } else if (item == Items.IRON_INGOT && !this.isAngry()) {
                 if (!pPlayer.abilities.instabuild) {
                     itemstack.shrink(1);
@@ -173,5 +272,10 @@ public class K9Entity extends WolfEntity {
 
             return super.mobInteract(pPlayer, pHand);
         }
+    }
+
+    @Override
+    public void containerChanged(IInventory p_76316_1_) {
+
     }
 }

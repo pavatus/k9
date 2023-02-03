@@ -8,7 +8,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = com.mdt.K9mod.K9mod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = com.mdt.K9mod.K9MOD.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class K9modClientRegistry {
         @SubscribeEvent
         public static void register(FMLClientSetupEvent event) {

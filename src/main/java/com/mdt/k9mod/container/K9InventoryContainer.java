@@ -1,5 +1,6 @@
 package com.mdt.k9mod.container;
 
+import com.mdt.k9mod.common.entities.K9Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -15,16 +16,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class K9InventoryContainer extends Container {   private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
     private final IInventory container;
     private final int containerRows;
+    private K9Entity entity;
 
-    public K9InventoryContainer(ContainerType<?> p_i50091_1_, int p_i50091_2_, PlayerInventory p_i50091_3_, int p_i50091_4_) {
-        this(p_i50091_1_, p_i50091_2_, p_i50091_3_, new Inventory(9 * p_i50091_4_), p_i50091_4_);
-    }
 
-    public K9InventoryContainer(ContainerType<?> p_i50092_1_, int p_i50092_2_, PlayerInventory p_i50092_3_, IInventory p_i50092_4_, int p_i50092_5_) {
+    public K9InventoryContainer(ContainerType<?> p_i50092_1_, int p_i50092_2_, PlayerInventory p_i50092_3_, IInventory p_i50092_4_, int p_i50092_5_, K9Entity entity) {
         super(p_i50092_1_, p_i50092_2_);
-        checkContainerSize(p_i50092_4_, p_i50092_5_ * 9);
+        //checkContainerSize(p_i50092_4_, p_i50092_5_ * 9);
         this.container = p_i50092_4_;
         this.containerRows = p_i50092_5_;
+        this.entity = entity;
         p_i50092_4_.startOpen(p_i50092_3_.player);
         int i = (this.containerRows - 4) * 18;
 
@@ -43,7 +43,6 @@ public class K9InventoryContainer extends Container {   private NonNullList<Item
         for(int i1 = 0; i1 < 9; ++i1) {
             this.addSlot(new Slot(p_i50092_3_, i1, 8 + i1 * 18, 161 + i));
         }
-
     }
 
     public boolean stillValid(PlayerEntity p_75145_1_) {
@@ -76,6 +75,7 @@ public class K9InventoryContainer extends Container {   private NonNullList<Item
 
     public void removed(PlayerEntity p_75134_1_) {
         super.removed(p_75134_1_);
+        this.entity.inventory = (Inventory) this.container;
         this.container.stopOpen(p_75134_1_);
     }
 
