@@ -1,6 +1,7 @@
-package com.mdt.K9mod;
+package com.mdt.k9mod;
 
 import com.mdt.k9mod.core.init.K9modEntities;
+import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -22,14 +23,14 @@ import org.apache.logging.log4j.Logger;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(K9MOD.MOD_ID)
-public class K9MOD
+@Mod(K9Mod.MOD_ID)
+public class K9Mod
 {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "k9mod";
 
-    public K9MOD() {
+    public K9Mod() {
 
 
         // Register the setup method for modloading
@@ -47,6 +48,7 @@ public class K9MOD
 
         K9modSounds.SOUNDS.register(bus);
         K9modEntities.ENTITIES.register(bus);
+        K9modItems.ITEMS.register(bus);
     }
 
     private void setup(final FMLCommonSetupEvent event)

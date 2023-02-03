@@ -13,11 +13,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class K9InventoryContainer extends Container {   private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
+public class K9InventoryContainer extends Container {
     private final IInventory container;
     private final int containerRows;
     private K9Entity entity;
-
 
     public K9InventoryContainer(ContainerType<?> p_i50092_1_, int p_i50092_2_, PlayerInventory p_i50092_3_, IInventory p_i50092_4_, int p_i50092_5_, K9Entity entity) {
         super(p_i50092_1_, p_i50092_2_);

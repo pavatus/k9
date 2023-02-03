@@ -1,5 +1,6 @@
 package com.mdt.k9mod.container;
 
+import com.mdt.k9mod.K9Mod;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -8,7 +9,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class K9modContainers {
-    public static DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, com.mdt.K9mod.K9MOD.MOD_ID);
+    public static DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, K9Mod.MOD_ID);
 
     public static final RegistryObject<ContainerType<K9InventoryContainer>> K9_INVENTORY_CONTAINER = CONTAINERS.register("k9_inventory_container", () -> IForgeContainerType.create(((windowId, inv, data) -> {
         return new K9InventoryContainer(ContainerType.GENERIC_9x3, 1, inv.player.inventory, inv,3, null);
