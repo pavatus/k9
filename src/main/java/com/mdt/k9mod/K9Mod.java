@@ -1,5 +1,6 @@
 package com.mdt.k9mod;
 
+import com.mdt.k9mod.core.init.K9modBlocks;
 import com.mdt.k9mod.core.init.K9modEntities;
 import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
@@ -49,6 +50,7 @@ public class K9Mod
         K9modSounds.SOUNDS.register(bus);
         K9modEntities.ENTITIES.register(bus);
         K9modItems.ITEMS.register(bus);
+        K9modBlocks.BLOCKS.register(bus);
     }
 
     private void setup(final FMLCommonSetupEvent event)

@@ -27,16 +27,18 @@ displayName="K9 Mod" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="examplemod.png" #optional
+logoFile="k9_logo.png" #optional
 # A text field displayed in the mod UI
-credits="The 24th Doctor 1922, for giving me a reason to do this" #optional
+credits="The24thDoctor1922, for giving us a reason to do this, as well as the BBC for the (sometimes irritating) creation of K9!" #optional
 # A text field displayed in the mod UI
-authors="Loqor and Bo" #optional
+authors="Loqor and Duzo, with help from Dr. Theo" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-Little mod that adds K9
+A small metallic canine companion mod from Doctor Who for your Minecraft world! Part of the MDTeam Collection.
 
-Check out AIT for more mods by us!
+Check out AIT (Adventures In Time) on Modrinth: https://www.modrinth.com/mod/ait
+
+Check out our Discord server for more mods by MDTeam!
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.examplemod]] #optional

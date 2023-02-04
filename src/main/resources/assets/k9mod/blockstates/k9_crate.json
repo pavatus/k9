@@ -1,0 +1,7 @@
+{
+  "variants" : {
+    "" : [
+      {"model" : "k9mod:block/k9_crate"}
+    ]
+  }
+}
