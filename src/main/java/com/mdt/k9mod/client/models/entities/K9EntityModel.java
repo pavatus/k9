@@ -253,6 +253,11 @@ public class K9EntityModel extends EntityModel<K9Entity> {
 		} else {
 			this.tongue.visible = false;
 		}
+		if(p_212843_1_.isTame()) {
+			this.collar.visible = true;
+		} else {
+			this.collar.visible = false;
+		}
 		this.tail.y = 21.5F;
 	}
 
