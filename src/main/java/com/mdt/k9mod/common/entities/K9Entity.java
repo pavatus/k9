@@ -4,12 +4,14 @@ import com.mdt.k9mod.container.K9InventoryContainer;
 import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
 import com.mdt.k9mod.util.NBTUtil;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -17,6 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.*;
@@ -32,6 +35,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.UUID;
 
 public class K9Entity extends WolfEntity {
@@ -44,8 +48,51 @@ public class K9Entity extends WolfEntity {
         super(entityEntityType, world);
     }
 
+    public static List<ItemEntity> getNearbyItems(K9Entity entity,double radius) {
+        List<ItemEntity> list = entity.level.getEntitiesOfClass(ItemEntity.class, entity.getBoundingBox().inflate(radius));
+        return list;
+    }
     @Override
     public void tick() {
+        if (this.isTame() && !this.isNoAi()) {
+            // check if hopper below
+            if (this.getBlockStateOn() == Blocks.HOPPER.defaultBlockState()) {
+                InventoryHelper.dropContents(this.level,this,this.inventory);
+            }
+
+            // check for nearby items and pick them up
+            List<ItemEntity> entities = getNearbyItems(this, 1.5);
+            for (ItemEntity entity : entities) {
+                if (entity.isOnGround()) {
+                    // stop if on a hopper
+                    if (this.getBlockStateOn() == Blocks.HOPPER.defaultBlockState()) {
+                        break;
+                    }
+                    // check if inventorys full
+                    if (this.inventory.getContainerSize() < 27) {
+                        this.inventory.addItem(entity.getItem());
+                        entity.kill();
+                    }
+                    this.inventory.addItem(entity.getItem());
+                    entity.kill();
+                }
+            }
+            // move towards the first item in the list thats on the ground
+            List<ItemEntity> nearbyItems = getNearbyItems(this, 4);
+            if (nearbyItems.size() != 0) {
+                for(int i = 0; i < nearbyItems.size(); i++) {
+                    // stop if on a hopper
+                    if (this.getBlockStateOn() == Blocks.HOPPER.defaultBlockState()) {
+                        break;
+                    }
+                    ItemEntity checkedItem = nearbyItems.get(i);
+                    if (checkedItem.isOnGround()) {
+                        this.getNavigation().moveTo(checkedItem.getX(), checkedItem.getY(), checkedItem.getZ(), Attributes.MOVEMENT_SPEED.getDefaultValue());
+                        break;
+                    }
+                }
+            }
+        }
         if (this.isNoAi()) {
             this.setHealth(getMaxHealth());
             if(numeral >= 200) {
@@ -123,7 +170,7 @@ public class K9Entity extends WolfEntity {
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new SitGoal(this));
-        this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
+        //this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
         //this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
@@ -166,7 +213,7 @@ public class K9Entity extends WolfEntity {
         }
 
         if (hurtCount == 17.5) {
-            level.playSound(null, this.getOnPos(), SoundEvents.BEACON_DEACTIVATE, SoundCategory.MASTER, 6, 0.25F);
+            level.playSound(null, this.getOnPos(), K9modSounds.K9_DIE.get(), SoundCategory.MASTER, 6, 0.25F);
             this.setNoAi(true);
             this.setInSittingPose(false);
         }
@@ -183,7 +230,7 @@ public class K9Entity extends WolfEntity {
                             .setStyle(Style.EMPTY.withColor(TextFormatting.AQUA).withItalic(true)), UUID.randomUUID());
                     hurtCount = 0;
                     this.setNoAi(false);
-                    level.playSound(null, this.getOnPos(), SoundEvents.ANVIL_USE, SoundCategory.MASTER, 4, 1);
+                    level.playSound(null, this.getOnPos(), K9modSounds.K9_RESTART.get(), SoundCategory.MASTER, 4, 1);
                 } else {
                     this.setHealth(20.0F);
                     if(itemstack.getDamageValue() > 16) {

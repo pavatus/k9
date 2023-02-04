@@ -22,4 +22,15 @@ public class K9modSounds {
             new ResourceLocation(K9Mod.MOD_ID, "knine_death")));
     public static final RegistryObject<SoundEvent> KNINE_AMBIENT = SOUNDS.register("knine_ambient", () -> new SoundEvent(
             new ResourceLocation(K9Mod.MOD_ID, "knine_ambient")));
+
+    public static final RegistryObject<SoundEvent> K9_MASTER = SOUNDS.register("k9_master", () -> new SoundEvent(
+            new ResourceLocation(K9Mod.MOD_ID, "k9_master")));
+    public static final RegistryObject<SoundEvent> K9_DEFENSE = SOUNDS.register("k9_defense", () -> new SoundEvent(
+            new ResourceLocation(K9Mod.MOD_ID, "k9_defense")));
+    public static final RegistryObject<SoundEvent> K9_DIE = SOUNDS.register("k9_die", () -> new SoundEvent(
+            new ResourceLocation(K9Mod.MOD_ID, "k9_die")));
+    public static final RegistryObject<SoundEvent> K9_RESTART = SOUNDS.register("k9_restart", () -> new SoundEvent(
+            new ResourceLocation(K9Mod.MOD_ID, "k9_restart")));
+    public static final RegistryObject<SoundEvent> K9_RUN = SOUNDS.register("k9_run", () -> new SoundEvent(
+            new ResourceLocation(K9Mod.MOD_ID, "k9_run")));
 }
