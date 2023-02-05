@@ -8,12 +8,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 
-public class K9EntityModel extends EntityModel<K9Entity> {
+public class K9EntityModel<K extends WolfEntity> extends EntityModel<K9Entity> {
 	public final ModelRenderer dog;
 	public final ModelRenderer head;
 	public final ModelRenderer cube_r1;
@@ -260,9 +262,6 @@ public class K9EntityModel extends EntityModel<K9Entity> {
 			this.collar.visible = false;
 		}
 		this.tail.y = 21.5F;
-		if(p_212843_1_.getCollarColor() == DyeColor.RED) {
-
-		}
 	}
 
 	@Override

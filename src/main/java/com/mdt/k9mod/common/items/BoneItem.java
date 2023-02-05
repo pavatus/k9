@@ -1,6 +1,7 @@
 package com.mdt.k9mod.common.items;
 
 import com.mdt.k9mod.common.entities.K9Entity;
+import net.minecraft.block.HopperBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,7 +35,8 @@ public class BoneItem extends Item {
 
         if (this.getLinkedEntityID(p_77624_1_) != null) {
             // if theres a linked k9 entity, set the tooltip to a golden text of its UUID
-            p_77624_3_.add(new TranslationTextComponent("K9 ID " + this.getLinkedEntityID(p_77624_1_)).setStyle(Style.EMPTY.withItalic(true).withColor(TextFormatting.GOLD)));
+            p_77624_3_.add(new TranslationTextComponent("K9 ID: ").setStyle(Style.EMPTY.withItalic(true).withColor(TextFormatting.GOLD)));
+            p_77624_3_.add(new TranslationTextComponent("" + this.getLinkedEntityID(p_77624_1_)).setStyle(Style.EMPTY.withItalic(true).withColor(TextFormatting.GOLD)));
         }
 
     }
@@ -48,11 +50,14 @@ public class BoneItem extends Item {
         if (!world.isClientSide) {
             if (getLinkedEntity(itemStack, (ServerWorld) world, context.getPlayer()) != null) {
                 K9Entity entity = getLinkedEntity(itemStack, (ServerWorld) world, context.getPlayer());
+                if(entity.isInSittingPose()) {
+                    return ActionResultType.FAIL;
+                }
                 if (context.getPlayer().isCrouching()) {
                     entity.moveTo(pos.getX(),pos.getY()+1,pos.getZ());
                     itemStack.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(context.getHand()));
                 } else {
-                    entity.getNavigation().moveTo(pos.getX(), pos.getY(), pos.getZ(), 1);
+                    entity.getNavigation().moveTo(pos.getX() - 0.5, pos.getY(), pos.getZ() - 0.5, 1);
                 }
                 world.playSound(null,pos, SoundEvents.NOTE_BLOCK_BIT, SoundCategory.MASTER,1f,0.4f);
                 return ActionResultType.SUCCESS;

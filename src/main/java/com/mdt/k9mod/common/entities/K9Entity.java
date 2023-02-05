@@ -6,6 +6,7 @@ import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
 import com.mdt.k9mod.util.NBTUtil;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.HopperBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
@@ -29,7 +30,9 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tileentity.HopperTileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
@@ -61,15 +64,19 @@ public class K9Entity extends WolfEntity {
 
     @Override
     public void tick() {
-        if (this.isTame() && !this.isInvulnerable()) {
+        if (this.isTame() && !this.isNoAi()) {
             // check if hopper below
-            if (this.getBlockStateOn() == Blocks.HOPPER.defaultBlockState()) {
+            if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
+                this.getNavigation().moveTo(this.getOnPos().getX(), this.getOnPos().getY(), this.getOnPos().getZ(), Attributes.MOVEMENT_SPEED.getDefaultValue());
                 // goes through every item in the inventory and drops it if the countdowns okay
                 if (!isOnCooldown()) {
+                    /*if(this.level.getBlockEntity(this.getOnPos()) instanceof HopperTileEntity) {
+                        HopperTileEntity hopperTileEntity = (HopperTileEntity) this.level.getBlockEntity(this.getOnPos());
+                    }*/
                     if (this.hopperItem >= this.inventory.getContainerSize()) {
                         this.hopperItem = 0;
                     }
-                    InventoryHelper.dropItemStack(this.level, this.getX(), this.getY(), this.getZ(), this.inventory.getItem(this.hopperItem));
+                    InventoryHelper.dropItemStack(this.level, this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getItem(this.hopperItem));
                     this.hopperItem++;
                     this.hopperCountdown = 1*20; // * 20 times by the length in seconds
                 }
@@ -81,7 +88,7 @@ public class K9Entity extends WolfEntity {
             for (ItemEntity entity : entities) {
                 if (entity.isOnGround()) {
                     // stop if on a hopper
-                    if (this.getBlockStateOn() == Blocks.HOPPER.defaultBlockState()) {
+                    if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
                         break;
                     }
                     // check if inventorys full
@@ -98,7 +105,7 @@ public class K9Entity extends WolfEntity {
             if (nearbyItems.size() != 0) {
                 for(int i = 0; i < nearbyItems.size(); i++) {
                     // stop if on a hopper
-                    if (this.getBlockStateOn() == Blocks.HOPPER.defaultBlockState()) {
+                    if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
                         break;
                     }
                     ItemEntity checkedItem = nearbyItems.get(i);
@@ -110,8 +117,8 @@ public class K9Entity extends WolfEntity {
             }
             // @TODO Move towards blocks that are in its target list
         }
-        if (this.isInvulnerable()) {
-            this.setHealth(getMaxHealth());
+        if (this.isNoAi()) {
+            //this.setHealth(getMaxHealth());
             if(numeral >= 200) {
                 numeral = 0;
             } else {
@@ -180,7 +187,7 @@ public class K9Entity extends WolfEntity {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
-        return /*SoundEvents.IRON_GOLEM_HURT;*/K9modSounds.K9_HURT.get();
+        return SoundEvents.IRON_GOLEM_HURT;//K9modSounds.K9_HURT.get();
     }
 
     @Override
@@ -230,15 +237,14 @@ public class K9Entity extends WolfEntity {
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
-        if (!this.isInvulnerable()) {
-            hurtCount += 0.5D;
+        if (!this.isNoAi()) {
+            hurtCount += damage;
             level.playSound(null, this.getOnPos(), K9modSounds.K9_HURT.get(), SoundCategory.MASTER, 5, 1);
         }
 
-        if (hurtCount == 17.5) {
-            level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundCategory.MASTER, 6, 0.25F);
+        if (hurtCount >= 35) {
+            level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundCategory.MASTER, 6, 1F);
             this.setNoAi(true);
-            this.setInvulnerable(true);
             this.setInSittingPose(false);
         }
 
@@ -247,22 +253,28 @@ public class K9Entity extends WolfEntity {
             ItemStack itemstack = pPlayer.getMainHandItem();
             Item item = itemstack.getItem();
             if (item == K9modItems.K9_WRENCH.get()) {
-                if (this.isInvulnerable()) {
+                if (this.isNoAi()) {
                     this.setHealth(20.0F);
-                    itemstack.setDamageValue(2);
+                    if(!pPlayer.abilities.instabuild) {
+                        itemstack.setDamageValue(1);
+                    }
                     pPlayer.sendMessage(new TranslationTextComponent("K9 is back to full health!")
                             .setStyle(Style.EMPTY.withColor(TextFormatting.AQUA).withItalic(true)), UUID.randomUUID());
                     hurtCount = 0;
                     this.setNoAi(false);
-                    this.setInvulnerable(false);
                     level.playSound(null, this.getOnPos(), K9modSounds.K9_RESTART.get(), SoundCategory.MASTER, 4, 1);
                 } else {
                     this.setHealth(20.0F);
+                    if(!pPlayer.abilities.instabuild) {
+                        itemstack.hurtAndBreak(1, pPlayer, player1 -> player1.broadcastBreakEvent(pPlayer.getUsedItemHand()));
+                    }
                     if(itemstack.getDamageValue() > 16) {
                         pPlayer.setItemInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
                         level.playSound(pPlayer, this.getOnPos(), SoundEvents.ITEM_BREAK, SoundCategory.PLAYERS, 10, 1);
                     } else {
-                        itemstack.setDamageValue(itemstack.getDamageValue() + 1);
+                        if(!pPlayer.abilities.instabuild) {
+                            itemstack.hurtAndBreak(1, pPlayer, player1 -> player1.broadcastBreakEvent(pPlayer.getUsedItemHand()));
+                        }
                     }
                     pPlayer.sendMessage(new TranslationTextComponent("K9 is back to full health!")
                             .setStyle(Style.EMPTY.withColor(TextFormatting.AQUA).withItalic(true)), UUID.randomUUID());
@@ -271,8 +283,11 @@ public class K9Entity extends WolfEntity {
                 }
             }
         }
-        damage = 0;
-        return super.hurt(source, damage);
+        if(!this.isNoAi()) {
+            return super.hurt(source,0);
+        } else {
+            return super.hurt(source, damage);
+        }
     }
 
     @Override
@@ -285,16 +300,21 @@ public class K9Entity extends WolfEntity {
 
         } else {
             if (this.isTame()) {
-                if (pPlayer.isCrouching() && !this.isInvulnerable()) {
-                    if (item == K9modItems.K9_BONE.get()) {
-                        ((BoneItem) item).linkBone(this,pPlayer);
+                if (pPlayer.isCrouching() && !this.isNoAi()) {
+                    if(this.getOwner() == pPlayer) {
+                        if (item == K9modItems.K9_BONE.get()) {
+                            ((BoneItem) item).linkBone(this, pPlayer);
+                        }
+                    } else {
+                        pPlayer.sendMessage(new TranslationTextComponent("This K9 is not yours!")
+                                .setStyle(Style.EMPTY.withColor(TextFormatting.DARK_RED).withItalic(true)), UUID.randomUUID());
                     }
                     pPlayer.openMenu(this.createContainerProvider());
                     this.level.playSound(null, this.getOnPos(), K9modSounds.K9_MASTER.get(), SoundCategory.MASTER, 5, 1);
-                    //System.out.println(item + " | " + this.isInvulnerable() + " | " + hurtCount + " isTame?: " + this.isTame());
+                    //System.out.println(item + " | " + this.isNoAi() + " | " + hurtCount + " isTame?: " + this.isTame());
                 }
 
-                if (this.isFood(itemstack) && this.getHealth() < this.getMaxHealth()) {
+                if (this.isFood(itemstack) && (this.getHealth() < this.getMaxHealth() || this.hurtCount > 0) ) {
                     if (!pPlayer.abilities.instabuild) {
                         itemstack.shrink(1);
                     }
@@ -303,7 +323,7 @@ public class K9Entity extends WolfEntity {
                     return ActionResultType.SUCCESS;
                 }
 
-                if (!(item instanceof DyeItem && !pPlayer.isCrouching())) {
+                if (!(item instanceof DyeItem)) {
                     ActionResultType actionresulttype = super.mobInteract(pPlayer, pHand);
                     if ((!actionresulttype.consumesAction() || this.isBaby()) && this.isOwnedBy(pPlayer)) {
                         this.setOrderedToSit(!this.isOrderedToSit());

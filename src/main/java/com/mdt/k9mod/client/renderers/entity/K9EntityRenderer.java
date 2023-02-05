@@ -8,14 +8,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.client.renderer.entity.layers.SheepWoolLayer;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.ResourceLocation;
 
 
-public class K9EntityRenderer extends MobRenderer<K9Entity, K9EntityModel> {
+public class K9EntityRenderer extends MobRenderer<K9Entity, K9EntityModel<K9Entity>> {
 
     public static final ResourceLocation RED_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9.png");
     public static final ResourceLocation WHITE_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_white.png");
@@ -32,11 +31,12 @@ public class K9EntityRenderer extends MobRenderer<K9Entity, K9EntityModel> {
     public static final ResourceLocation GRAY_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_gray.png");
     public static final ResourceLocation LIGHT_GRAY_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_light_gray.png");
     public static final ResourceLocation BLACK_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_black.png");
+    public static final ResourceLocation SCARF_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_scarf.png");
 
     public ResourceLocation texture;
 
     public K9EntityRenderer(EntityRendererManager rendererManagerIn) {
-        super(rendererManagerIn, new K9EntityModel(), 0.35f);
+        super(rendererManagerIn, new K9EntityModel<>(), 0.35f);
         this.texture = RED_TEXTURE;
         this.addLayer(new K9EmissionLayer(this));
     }
@@ -73,6 +73,9 @@ public class K9EntityRenderer extends MobRenderer<K9Entity, K9EntityModel> {
             this.texture = LIGHT_GRAY_TEXTURE;
         } else if(model.getCollarColor() == DyeColor.BLACK) {
             this.texture = BLACK_TEXTURE;
+        }
+        if (model.getEntity().hasCustomName() && "Tom".equals(model.getEntity().getName().getContents())) {
+            this.texture = SCARF_TEXTURE;
         }
         super.render(model, p_225623_2_, p_225623_3_, p_225623_4_, p_225623_5_, p_225623_6_);
     }
