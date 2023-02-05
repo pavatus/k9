@@ -1,11 +1,11 @@
 package com.mdt.k9mod.common.entities;
 
+import com.mdt.k9mod.common.items.BoneItem;
 import com.mdt.k9mod.container.K9InventoryContainer;
 import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
 import com.mdt.k9mod.util.NBTUtil;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.StructureVoidBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
@@ -34,7 +34,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -44,6 +43,7 @@ public class K9Entity extends WolfEntity {
     private final Inventory inventory = new Inventory(27);
     private static final DataParameter<Byte> DATA_ID_FLAGS = EntityDataManager.defineId(K9Entity.class, DataSerializers.BYTE);
     private int numeral = 0;
+    private int hopperCountdown,hopperItem = 0;
     private double hurtCount = 0;
 
     public K9Entity(EntityType<K9Entity> entityEntityType, World world) {
@@ -54,12 +54,26 @@ public class K9Entity extends WolfEntity {
         List<ItemEntity> list = entity.level.getEntitiesOfClass(ItemEntity.class, entity.getBoundingBox().inflate(radius));
         return list;
     }
+
+    private boolean isOnCooldown() {
+        return this.hopperCountdown > 0;
+    }
+
     @Override
     public void tick() {
         if (this.isTame() && !this.isInvulnerable()) {
             // check if hopper below
             if (this.getBlockStateOn() == Blocks.HOPPER.defaultBlockState()) {
-                InventoryHelper.dropContents(this.level,this, this.inventory);
+                // goes through every item in the inventory and drops it if the countdowns okay
+                if (!isOnCooldown()) {
+                    if (this.hopperItem >= this.inventory.getContainerSize()) {
+                        this.hopperItem = 0;
+                    }
+                    InventoryHelper.dropItemStack(this.level, this.getX(), this.getY(), this.getZ(), this.inventory.getItem(this.hopperItem));
+                    this.hopperItem++;
+                    this.hopperCountdown = 1*20; // * 20 times by the length in seconds
+                }
+                this.hopperCountdown--;
             }
 
             // check for nearby items and pick them up
@@ -94,6 +108,7 @@ public class K9Entity extends WolfEntity {
                     }
                 }
             }
+            // @TODO Move towards blocks that are in its target list
         }
         if (this.isInvulnerable()) {
             this.setHealth(getMaxHealth());
@@ -271,6 +286,9 @@ public class K9Entity extends WolfEntity {
         } else {
             if (this.isTame()) {
                 if (pPlayer.isCrouching() && !this.isInvulnerable()) {
+                    if (item == K9modItems.K9_BONE.get()) {
+                        ((BoneItem) item).linkBone(this,pPlayer);
+                    }
                     pPlayer.openMenu(this.createContainerProvider());
                     this.level.playSound(null, this.getOnPos(), K9modSounds.K9_MASTER.get(), SoundCategory.MASTER, 5, 1);
                     //System.out.println(item + " | " + this.isInvulnerable() + " | " + hurtCount + " isTame?: " + this.isTame());
