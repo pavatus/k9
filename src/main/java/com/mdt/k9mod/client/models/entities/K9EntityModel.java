@@ -8,6 +8,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.item.DyeColor;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
@@ -259,6 +260,9 @@ public class K9EntityModel extends EntityModel<K9Entity> {
 			this.collar.visible = false;
 		}
 		this.tail.y = 21.5F;
+		if(p_212843_1_.getCollarColor() == DyeColor.RED) {
+
+		}
 	}
 
 	@Override
@@ -275,4 +279,6 @@ public class K9EntityModel extends EntityModel<K9Entity> {
 		modelRenderer.yRot = y;
 		modelRenderer.zRot = z;
 	}
+
+
 }

@@ -5,6 +5,7 @@ import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
 import com.mdt.k9mod.util.NBTUtil;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.StructureVoidBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
@@ -33,6 +34,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -54,10 +56,10 @@ public class K9Entity extends WolfEntity {
     }
     @Override
     public void tick() {
-        if (this.isTame() && !this.isNoAi()) {
+        if (this.isTame() && !this.isInvulnerable()) {
             // check if hopper below
             if (this.getBlockStateOn() == Blocks.HOPPER.defaultBlockState()) {
-                InventoryHelper.dropContents(this.level,this,this.inventory);
+                InventoryHelper.dropContents(this.level,this, this.inventory);
             }
 
             // check for nearby items and pick them up
@@ -93,7 +95,7 @@ public class K9Entity extends WolfEntity {
                 }
             }
         }
-        if (this.isNoAi()) {
+        if (this.isInvulnerable()) {
             this.setHealth(getMaxHealth());
             if(numeral >= 200) {
                 numeral = 0;
@@ -109,6 +111,11 @@ public class K9Entity extends WolfEntity {
             level.addParticle(ParticleTypes.LARGE_SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0.1, 0);
         } else {
             numeral = 0;
+        }
+        int dying = 0;
+        if(this.isInWater()) {
+            level.addParticle(ParticleTypes.LARGE_SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0.1, 0);
+            level.addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0.05,0);
         }
         super.tick();
     }
@@ -148,22 +155,22 @@ public class K9Entity extends WolfEntity {
     @Override
     protected SoundEvent getAmbientSound() {
         if (this.isAngry()) {
-            return K9modSounds.KNINE_GROWL.get();
+            return K9modSounds.K9_GROWL.get();
         } else if (this.random.nextInt(3) == 0) {
-            return this.isTame() && this.getHealth() < 10.0F ? K9modSounds.KNINE_WHINE.get() : K9modSounds.KNINE_PANT.get();
+            return this.isTame() && this.getHealth() < 10.0F ? K9modSounds.K9_WHINE.get() : K9modSounds.K9_PANT.get();
         } else {
-            return K9modSounds.KNINE_AMBIENT.get();
+            return K9modSounds.K9_AMBIENT.get();
         }
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource p_184601_1_) {
-        return SoundEvents.IRON_GOLEM_HURT;//K9modSounds.KNINE_HURT.get();
+        return /*SoundEvents.IRON_GOLEM_HURT;*/K9modSounds.K9_HURT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.IRON_GOLEM_DEATH;//K9modSounds.KNINE_DEATH.get();
+        return /*SoundEvents.IRON_GOLEM_DEATH;*/K9modSounds.K9_DEATH.get();
     }
 
     @Override
@@ -208,13 +215,15 @@ public class K9Entity extends WolfEntity {
 
     @Override
     public boolean hurt(DamageSource source, float damage) {
-        if (!this.isNoAi()) {
+        if (!this.isInvulnerable()) {
             hurtCount += 0.5D;
+            level.playSound(null, this.getOnPos(), K9modSounds.K9_HURT.get(), SoundCategory.MASTER, 5, 1);
         }
 
         if (hurtCount == 17.5) {
-            level.playSound(null, this.getOnPos(), K9modSounds.K9_DIE.get(), SoundCategory.MASTER, 6, 0.25F);
+            level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundCategory.MASTER, 6, 0.25F);
             this.setNoAi(true);
+            this.setInvulnerable(true);
             this.setInSittingPose(false);
         }
 
@@ -223,13 +232,14 @@ public class K9Entity extends WolfEntity {
             ItemStack itemstack = pPlayer.getMainHandItem();
             Item item = itemstack.getItem();
             if (item == K9modItems.K9_WRENCH.get()) {
-                if (this.isNoAi()) {
+                if (this.isInvulnerable()) {
                     this.setHealth(20.0F);
                     itemstack.setDamageValue(2);
                     pPlayer.sendMessage(new TranslationTextComponent("K9 is back to full health!")
                             .setStyle(Style.EMPTY.withColor(TextFormatting.AQUA).withItalic(true)), UUID.randomUUID());
                     hurtCount = 0;
                     this.setNoAi(false);
+                    this.setInvulnerable(false);
                     level.playSound(null, this.getOnPos(), K9modSounds.K9_RESTART.get(), SoundCategory.MASTER, 4, 1);
                 } else {
                     this.setHealth(20.0F);
@@ -260,9 +270,10 @@ public class K9Entity extends WolfEntity {
 
         } else {
             if (this.isTame()) {
-                if (pPlayer.isCrouching() && !this.isNoAi()) {
+                if (pPlayer.isCrouching() && !this.isInvulnerable()) {
                     pPlayer.openMenu(this.createContainerProvider());
-                    //System.out.println(item + " | " + this.isNoAi() + " | " + hurtCount + " isTame?: " + this.isTame());
+                    this.level.playSound(null, this.getOnPos(), K9modSounds.K9_MASTER.get(), SoundCategory.MASTER, 5, 1);
+                    //System.out.println(item + " | " + this.isInvulnerable() + " | " + hurtCount + " isTame?: " + this.isTame());
                 }
 
                 if (this.isFood(itemstack) && this.getHealth() < this.getMaxHealth()) {
@@ -274,7 +285,7 @@ public class K9Entity extends WolfEntity {
                     return ActionResultType.SUCCESS;
                 }
 
-                if (!(item instanceof DyeItem)) {
+                if (!(item instanceof DyeItem && !pPlayer.isCrouching())) {
                     ActionResultType actionresulttype = super.mobInteract(pPlayer, pHand);
                     if ((!actionresulttype.consumesAction() || this.isBaby()) && this.isOwnedBy(pPlayer)) {
                         this.setOrderedToSit(!this.isOrderedToSit());
@@ -292,6 +303,7 @@ public class K9Entity extends WolfEntity {
                     this.setCollarColor(dyecolor);
                     if (!pPlayer.abilities.instabuild) {
                         itemstack.shrink(1);
+                        //System.out.println(this.getCollarColor());
                     }
 
                     return ActionResultType.SUCCESS;

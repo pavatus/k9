@@ -1,259 +1,81 @@
 {
-  "sonic_sound": {
-    "category": "ambient",
-    "subtitle": "Sonic sound",
+  "k9_growl": {
+    "subtitle": "K9 growling",
     "sounds": [
       {
-        "name": "ait:sonic/sonic_sound",
+        "name": "k9mod:entities/k9/k9_growl",
         "stream": false
       }
     ]
   },
-  "sonic_active": {
-    "category": "ambient",
-    "subtitle": "Sonic active",
+  "k9_whine": {
+    "subtitle": "K9 whining",
     "sounds": [
       {
-        "name": "ait:sonic/sonic_active",
+        "name": "k9mod:entities/k9/k9_whine",
         "stream": false
       }
     ]
   },
-  "police_box_open": {
-    "category": "ambient",
-    "subtitle": "TARDIS doors open",
+  "k9_pant": {
+    "subtitle": "K9 panting",
     "sounds": [
       {
-        "name": "ait:boxes/police_box_open",
+        "name": "k9mod:entities/k9/k9_pant",
         "stream": false
       }
     ]
   },
-  "roundel_doors": {
-    "category": "ambient",
-    "subtitle": "Roundel doors open",
-    "sounds": [
-      {
-        "name": "ait:boxes/roundel_doors_open",
-        "stream": false
-      }
-    ]
-  },
-  "police_box_close": {
-    "category": "ambient",
-    "subtitle": "TARDIS doors close",
-    "sounds": [
-      {
-        "name": "ait:boxes/police_box_close",
-        "stream": false
-      }
-    ]
-  },
-  "tardis_first_enter": {
-    "category": "ambient",
-    "subtitle": "TARDIS first enter",
-    "sounds": [
-      {
-        "name": "ait:music/tardis_first_enter",
-        "stream": false
-      }
-    ]
-  },
-  "typewriter_ding": {
-    "category": "ambient",
-    "subtitle": "Typewriter ding",
-    "sounds": [
-      {
-        "name": "ait:block_sounds/typewriter_ding",
-        "stream": false
-      }
-    ]
-  },
-  "tardis_takeoff": {
-    "category": "ambient",
-    "subtitle": "TARDIS takeoff",
-    "sounds": [
-      {
-        "name": "ait:boxes/tardis_takeoff",
-        "stream": false
-      }
-    ]
-  },
-  "tardis_landing": {
-    "category": "ambient",
-    "subtitle": "TARDIS landing",
-    "sounds": [
-      {
-        "name": "ait:boxes/tardis_landing",
-        "stream": false
-      }
-    ]
-  },
-  "tardis_fail_landing": {
-    "category": "ambient",
-    "subtitle": "TARDIS landing fail",
-    "sounds": [
-      {
-        "name": "ait:boxes/tardis_fail_landing",
-        "stream": false
-      }
-    ]
-  },  "cloister_bell": {
-    "category": "ambient",
-    "subtitle": "Cloister Ring",
-    "sounds": [
-      {
-        "name": "ait:boxes/cloister_bell",
-        "stream": false
-      }
-    ]
-  },
-  "tardis_lock": {
-    "category": "ambient",
-    "subtitle": "TARDIS lock",
-    "sounds": [
-      {
-        "name": "ait:boxes/tardis_lock",
-        "stream": false
-      }
-    ]
-  },
-  "knine_growl": {
-    "category": "ambient",
-    "subtitle": "K9 growl",
-    "sounds": [
-      {
-        "name": "ait:entities/k9/knine_growl",
-        "stream": false
-      }
-    ]
-  },
-  "knine_whine": {
-    "category": "ambient",
-    "subtitle": "K9 whine",
-    "sounds": [
-      {
-        "name": "ait:entities/k9/knine_whine",
-        "stream": false
-      }
-    ]
-  },
-  "knine_pant": {
-    "category": "ambient",
-    "subtitle": "K9 pant",
-    "sounds": [
-      {
-        "name": "ait:entities/k9/knine_pant",
-        "stream": false
-      }
-    ]
-  },
-  "knine_hurt": {
-    "category": "ambient",
+  "k9_hurt": {
     "subtitle": "K9 hurt",
     "sounds": [
       {
-        "name": "ait:entities/k9/knine_hurt",
+        "name": "k9mod:entities/k9/k9_hurt",
         "stream": false
       }
     ]
   },
-  "knine_death": {
-    "category": "ambient",
-    "subtitle": "K9 dies",
+  "k9_death": {
+    "subtitle": "K9 died",
     "sounds": [
       {
-        "name": "ait:entities/k9/knine_death",
+        "name": "k9mod:entities/k9/k9_die",
         "stream": false
       }
     ]
   },
-  "cyber_march_quick": {
-    "category": "ambient",
-    "subtitle": "Cybermen march",
+  "k9_master": {
+    "subtitle": "\"Master!\" - K9",
     "sounds": [
       {
-        "name": "ait:entities/cybermen/cyber_march_quick",
+        "name": "k9mod:entities/k9/k9_master",
         "stream": false
       }
     ]
   },
-  "cyber_ywbd": {
-    "category": "ambient",
-    "subtitle": "YOU WILL BE DELETED. - Cyberman",
+  "k9_restart": {
+    "subtitle": "K9 restarting",
     "sounds": [
       {
-        "name": "ait:entities/cybermen/cyber_ywbd",
+        "name": "k9mod:entities/k9/k9_restart",
         "stream": false
       }
     ]
   },
-  "dalek_death": {
-    "category": "ambient",
-    "subtitle": "Dalek death",
+  "k9_run": {
+    "subtitle": "K9 running",
     "sounds": [
       {
-        "name": "ait:entities/daleks/dalek_death",
+        "name": "k9mod:entities/k9/k9_run",
         "stream": false
       }
     ]
   },
-  "dalek_move": {
-    "category": "ambient",
-    "subtitle": "Dalek moving",
+  "k9_defense": {
+    "subtitle": "K9 defending",
     "sounds": [
       {
-        "name": "ait:entities/daleks/dalek_move",
-        "stream": false
-      }
-    ]
-  },
-  "dalek_exterminate": {
-    "category": "ambient",
-    "subtitle": "Exterminate! - Daleks",
-    "sounds": [
-      {
-        "name": "ait:entities/daleks/exterminate",
-        "stream": false
-      }
-    ]
-  },
-  "dalek_gunfire": {
-    "category": "ambient",
-    "subtitle": "Dalek gunfire",
-    "sounds": [
-      {
-        "name": "ait:entities/daleks/dalek_gunfire",
-        "stream": false
-      }
-    ]
-  },
-  "dalek_hit": {
-    "category": "ambient",
-    "subtitle": "Dalek hit",
-    "sounds": [
-      {
-        "name": "ait:entities/daleks/dalek_hit",
-        "stream": false
-      }
-    ]
-  },
-  "fly_wing_sound": {
-    "category": "player",
-    "subtitle": "Angel wings flutter",
-    "sounds" : [
-      {
-        "name": "ait:cosmetic/fly_wing_sound",
-        "stream": false
-      }
-    ]
-  },
-  "button_press": {
-    "category": "ambient",
-    "subtitle": "Button press",
-    "sounds": [
-      {
-        "name": "ait:boxes/button_press",
+        "name": "k9mod:entities/k9/k9_defense",
         "stream": false
       }
     ]
