@@ -1,7 +1,7 @@
 package com.mdt.k9mod.common.items;
 
 import com.mdt.k9mod.common.entities.K9Entity;
-import net.minecraft.block.HopperBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,6 +33,8 @@ public class BoneItem extends Item {
     public void appendHoverText(ItemStack p_77624_1_, @Nullable World p_77624_2_, List<ITextComponent> p_77624_3_, ITooltipFlag p_77624_4_) {
         super.appendHoverText(p_77624_1_, p_77624_2_, p_77624_3_, p_77624_4_);
 
+        p_77624_3_.add(new TranslationTextComponent("Override K9 Navigation Systems with a Tasty Treat!").withStyle(TextFormatting.GREEN));
+
         if (this.getLinkedEntityID(p_77624_1_) != null) {
             // if theres a linked k9 entity, set the tooltip to a golden text of its UUID
             p_77624_3_.add(new TranslationTextComponent("K9 ID: ").setStyle(Style.EMPTY.withItalic(true).withColor(TextFormatting.GOLD)));
@@ -53,13 +55,20 @@ public class BoneItem extends Item {
                 if(entity.isInSittingPose()) {
                     return ActionResultType.FAIL;
                 }
+                player.getCooldowns().addCooldown(this, 120); // Cooldown for X / 20 = Y seconds :)
                 if (context.getPlayer().isCrouching()) {
+                    // Check for whether the K9 can actually go there, and find the best spot for it
+                    if (world.getBlockState(pos.above()).getBlock() != Blocks.AIR) {
+                        return ActionResultType.FAIL;
+                    }
+                    //world.addParticle(ParticleTypes.PORTAL,entity.getX(),entity.getY(),entity.getZ(),2,1,2);
                     entity.moveTo(pos.getX(),pos.getY()+1,pos.getZ());
+                    world.playSound(null,pos, SoundEvents.ENDERMAN_TELEPORT, SoundCategory.MASTER,1f,0.4f);
                     itemStack.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(context.getHand()));
                 } else {
                     entity.getNavigation().moveTo(pos.getX() - 0.5, pos.getY(), pos.getZ() - 0.5, 1);
+                    world.playSound(null,pos, SoundEvents.NOTE_BLOCK_BIT, SoundCategory.MASTER,1f,0.4f);
                 }
-                world.playSound(null,pos, SoundEvents.NOTE_BLOCK_BIT, SoundCategory.MASTER,1f,0.4f);
                 return ActionResultType.SUCCESS;
             }
         }
