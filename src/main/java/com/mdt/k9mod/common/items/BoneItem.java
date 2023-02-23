@@ -57,7 +57,7 @@ public class BoneItem extends Item {
                 }
                 player.getCooldowns().addCooldown(this, 120); // Cooldown for X / 20 = Y seconds :)
                 if (context.getPlayer().isCrouching()) {
-                    // Check for whether the K9 can actually go there, and find the best spot for it
+                    // Check for whether the K9 can actually go there, and find the best spot for it.
                     if (world.getBlockState(pos.above()).getBlock() != Blocks.AIR) {
                         return ActionResultType.FAIL;
                     }

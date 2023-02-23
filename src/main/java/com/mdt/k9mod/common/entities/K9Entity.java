@@ -46,6 +46,7 @@ public class K9Entity extends WolfEntity {
     private final Inventory inventory = new Inventory(27);
     private static final DataParameter<Byte> DATA_ID_FLAGS = EntityDataManager.defineId(K9Entity.class, DataSerializers.BYTE);
     private int numeral = 0;
+    public int battery = 100;
     private int hopperCountdown,hopperItem = 0;
     private double hurtCount = 0;
 
@@ -64,6 +65,11 @@ public class K9Entity extends WolfEntity {
 
     @Override
     public void tick() {
+        if (battery <= 0) {
+            level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundCategory.MASTER, 6, 1F);
+            this.setNoAi(true);
+            this.setInSittingPose(false);
+        }
         if (this.isTame() && !this.isNoAi()) {
             // check if hopper below
             if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
@@ -233,6 +239,16 @@ public class K9Entity extends WolfEntity {
                 return new TranslationTextComponent("screen.k9mod.k9_gui");
             }
         };
+    }
+
+    @Override
+    protected void onChangedBlock(BlockPos p_184594_1_) {
+        super.onChangedBlock(p_184594_1_);
+        if (this.random.nextInt(9) == 0) { // 0.1% chance of it draining battery
+            if (this.battery > 0) {
+                this.battery--;
+            }
+        }
     }
 
     @Override
