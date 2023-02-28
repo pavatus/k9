@@ -1,7 +1,7 @@
 package com.mdt.k9mod.core.init;
 
 import com.mdt.k9mod.K9Mod;
-import com.mdt.k9mod.core.blocks.K9CrateBlock;
+import com.mdt.k9mod.common.blocks.K9CrateBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;

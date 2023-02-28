@@ -1,4 +1,4 @@
-package com.mdt.k9mod.core.blocks;
+package com.mdt.k9mod.common.blocks;
 
 import com.mdt.k9mod.common.entities.K9Entity;
 import com.mdt.k9mod.core.init.K9modEntities;
