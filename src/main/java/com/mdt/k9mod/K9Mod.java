@@ -1,9 +1,6 @@
 package com.mdt.k9mod;
 
-import com.mdt.k9mod.core.init.K9modBlocks;
-import com.mdt.k9mod.core.init.K9modEntities;
-import com.mdt.k9mod.core.init.K9modItems;
-import com.mdt.k9mod.core.init.K9modSounds;
+import com.mdt.k9mod.core.init.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,6 +48,7 @@ public class K9Mod
         K9modEntities.ENTITIES.register(bus);
         K9modItems.ITEMS.register(bus);
         K9modBlocks.BLOCKS.register(bus);
+        K9Containers.CONTAINERS.register(bus);
     }
 
     private void setup(final FMLCommonSetupEvent event)

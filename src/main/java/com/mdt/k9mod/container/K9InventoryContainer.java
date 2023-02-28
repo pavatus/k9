@@ -1,11 +1,13 @@
 package com.mdt.k9mod.container;
 
-import com.mdt.k9mod.core.init.K9ContainerType;
+import com.mdt.k9mod.core.init.K9Containers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.*;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ShulkerBoxSlot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class K9InventoryContainer extends Container {
@@ -20,7 +22,7 @@ public class K9InventoryContainer extends Container {
     }
 
     public K9InventoryContainer(int p_i50066_1_, PlayerInventory p_i50066_2_, IInventory p_i50066_3_) {
-        super(K9ContainerType.K9_GUI, p_i50066_1_);
+        super(K9Containers.K9_CONTAINER.get(), p_i50066_1_);
         checkContainerSize(p_i50066_3_, 27);
         this.container = p_i50066_3_;
         p_i50066_3_.startOpen(p_i50066_2_.player);
