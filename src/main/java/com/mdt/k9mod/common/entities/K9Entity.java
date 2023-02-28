@@ -160,6 +160,7 @@ public class K9Entity extends WolfEntity {
 
         nbt.putInt("deadTime", this.numeral);
         nbt.putDouble("hurtCount", this.hurtCount);
+        nbt.putInt("Battery", this.battery);
         NBTUtil.inventoryToNBT(this.inventory, nbt);
     }
 
@@ -169,6 +170,7 @@ public class K9Entity extends WolfEntity {
 
         this.numeral = nbt.getInt("deadTime");
         this.hurtCount = nbt.getDouble("hurtCount");
+        this.battery = nbt.getInt("batteryLevel");
         NBTUtil.inventoryFromNBT(this.inventory, nbt);
     }
 
@@ -320,6 +322,9 @@ public class K9Entity extends WolfEntity {
                     if(this.getOwner() == pPlayer) {
                         if (item == K9modItems.K9_BONE.get()) {
                             ((BoneItem) item).linkBone(this, pPlayer);
+                        } else if (item == K9modItems.K9_WRENCH.get()) {
+                            pPlayer.sendMessage(new TranslationTextComponent("Remaining Battery: " + this.battery + "%")
+                                    .setStyle(Style.EMPTY.withColor(TextFormatting.GREEN).withItalic(true).withBold(true)), UUID.randomUUID());
                         }
                     } else {
                         pPlayer.sendMessage(new TranslationTextComponent("This K9 is not yours!")

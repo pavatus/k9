@@ -1,10 +1,12 @@
 package com.mdt.k9mod.screen;
 
+import com.mdt.k9mod.K9Mod;
 import com.mdt.k9mod.container.K9InventoryContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ShulkerBoxContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,23 +14,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class K9InventoryScreen extends ContainerScreen<K9InventoryContainer> {
-    private static final ResourceLocation GUI = new ResourceLocation("textures/gui/container/k9_gui.png");
-    private final int containerRows;
-    private float xMouse;
-    private float yMouse;
+    private static final ResourceLocation GUI = new ResourceLocation(K9Mod.MOD_ID,"textures/gui/k9_gui.png");
 
-    public K9InventoryScreen(K9InventoryContainer container, PlayerInventory inventory, ITextComponent text) {
-        super(container, inventory, text);
-        this.passEvents = false;
-        this.containerRows = container.getRowCount();
-        this.imageHeight = 114 + this.containerRows * 18;
-        this.inventoryLabelY = this.imageHeight - 94;
+    public K9InventoryScreen(K9InventoryContainer p_i51078_1_, PlayerInventory p_i51078_2_, ITextComponent p_i51078_3_) {
+        super(p_i51078_1_, p_i51078_2_, p_i51078_3_);
+        ++this.imageHeight;
     }
 
     public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
         this.renderBackground(p_230430_1_);
-        this.xMouse = (float)p_230430_2_;
-        this.yMouse = (float)p_230430_3_;
         super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
         this.renderTooltip(p_230430_1_, p_230430_2_, p_230430_3_);
     }
