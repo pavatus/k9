@@ -1,5 +1,6 @@
 package com.mdt.k9mod.container;
 
+import com.mdt.k9mod.common.entities.K9Entity;
 import com.mdt.k9mod.core.init.K9Containers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -12,19 +13,23 @@ import net.minecraft.item.ItemStack;
 
 public class K9InventoryContainer extends Container {
 
-    /*public K9InventoryContainer(int i, PlayerInventory playerInventory, IInventory inventory) {
-        super(K9ContainerType.K9_GUI, i, playerInventory, inventory, 3);
-    }*/
     private final IInventory container;
+    public int battery;
 
     public K9InventoryContainer(int p_i50065_1_, PlayerInventory p_i50065_2_) {
-        this(p_i50065_1_, p_i50065_2_, new Inventory(27));
+        this(p_i50065_1_, p_i50065_2_, new Inventory(27), 0);
     }
 
-    public K9InventoryContainer(int p_i50066_1_, PlayerInventory p_i50066_2_, IInventory p_i50066_3_) {
+    public int getBattery() {
+        return this.battery;
+    }
+
+    public K9InventoryContainer(int p_i50066_1_, PlayerInventory p_i50066_2_, IInventory p_i50066_3_, int batteryLevel) {
         super(K9Containers.K9_CONTAINER.get(), p_i50066_1_);
         checkContainerSize(p_i50066_3_, 27);
         this.container = p_i50066_3_;
+        this.battery = batteryLevel;
+        System.out.println(batteryLevel);
         p_i50066_3_.startOpen(p_i50066_2_.player);
         int i = 3;
         int j = 9;
@@ -44,7 +49,6 @@ public class K9InventoryContainer extends Container {
         for(int j1 = 0; j1 < 9; ++j1) {
             this.addSlot(new Slot(p_i50066_2_, j1, 8 + j1 * 18, 142));
         }
-
     }
 
     public boolean stillValid(PlayerEntity p_75145_1_) {

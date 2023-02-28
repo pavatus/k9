@@ -2,6 +2,7 @@ package com.mdt.k9mod.client;
 
 import com.mdt.k9mod.K9Mod;
 import com.mdt.k9mod.client.renderers.entity.K9EntityRenderer;
+import com.mdt.k9mod.container.K9InventoryContainer;
 import com.mdt.k9mod.core.init.K9Containers;
 import com.mdt.k9mod.core.init.K9modBlocks;
 import com.mdt.k9mod.core.init.K9modEntities;

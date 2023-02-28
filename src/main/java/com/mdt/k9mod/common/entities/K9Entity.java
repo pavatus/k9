@@ -230,15 +230,15 @@ public class K9Entity extends WolfEntity {
         return super.isFood(new ItemStack(Items.REDSTONE));
     }
 
-    private INamedContainerProvider createContainerProvider() {
+    private INamedContainerProvider createContainerProvider(int batteryLevel) {
         return new INamedContainerProvider() {
 
             public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity player) {
-                return new K9InventoryContainer(i, playerInventory, inventory);
+                return new K9InventoryContainer(i, playerInventory, inventory, batteryLevel);
             }
 
             public ITextComponent getDisplayName() {
-                return new TranslationTextComponent("screen.k9mod.k9_gui");
+                return new TranslationTextComponent("screen.k9mod.k9_gui").setStyle(Style.EMPTY.withColor(TextFormatting.WHITE));
             }
         };
     }
@@ -330,7 +330,7 @@ public class K9Entity extends WolfEntity {
                         pPlayer.sendMessage(new TranslationTextComponent("This K9 is not yours!")
                                 .setStyle(Style.EMPTY.withColor(TextFormatting.DARK_RED).withItalic(true)), UUID.randomUUID());
                     }
-                    pPlayer.openMenu(this.createContainerProvider());
+                    pPlayer.openMenu(this.createContainerProvider(this.battery));
                     this.level.playSound(null, this.getOnPos(), K9modSounds.K9_MASTER.get(), SoundCategory.MASTER, 5, 1);
                     //System.out.println(item + " | " + this.isNoAi() + " | " + hurtCount + " isTame?: " + this.isTame());
                 }
