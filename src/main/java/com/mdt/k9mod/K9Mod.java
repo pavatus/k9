@@ -1,6 +1,8 @@
 package com.mdt.k9mod;
 
+import com.mdt.k9mod.client.screens.K9InventoryScreen;
 import com.mdt.k9mod.core.init.*;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -88,7 +90,7 @@ public class K9Mod
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-
+        MenuScreens.register(K9Containers.K9_CONTAINER.get(), K9InventoryScreen::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

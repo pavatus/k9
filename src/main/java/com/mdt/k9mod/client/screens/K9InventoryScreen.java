@@ -15,7 +15,7 @@ import net.minecraftforge.client.gui.widget.ExtendedButton;
 import java.awt.*;
 
 public class K9InventoryScreen extends AbstractContainerScreen<K9InventoryContainer> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/gui/example_chest.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/gui/k9_inventory_gui.png");
 
     public K9InventoryScreen(K9InventoryContainer container, Inventory playerInv, Component title) {
             super(container, playerInv, title);
