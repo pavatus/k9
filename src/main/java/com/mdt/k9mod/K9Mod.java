@@ -43,7 +43,7 @@ public class K9Mod
 
         K9modSounds.SOUNDS.register(bus);
         K9modEntities.ENTITIES.register(bus);
-//        K9modItems.ITEMS.register(bus);
+        K9modItems.ITEMS.register(bus);
 //        K9modBlocks.BLOCKS.register(bus);
 //        K9Containers.CONTAINERS.register(bus);
     }

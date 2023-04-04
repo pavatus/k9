@@ -1,7 +1,6 @@
 package com.mdt.k9mod.common.entities;
 
 import com.mdt.k9mod.common.items.BoneItem;
-import com.mdt.k9mod.container.K9InventoryContainer;
 import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
 import com.mdt.k9mod.util.NBTUtil;
@@ -9,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,7 +28,6 @@ import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,7 +38,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HopperBlock;
 
 import java.util.List;
-import java.util.UUID;
 
 public class K9Entity extends Wolf {
     private final SimpleContainer inventory = new SimpleContainer(27);
@@ -228,18 +224,18 @@ public class K9Entity extends Wolf {
         return super.isFood(new ItemStack(Items.REDSTONE));
     }
 
-    private MenuProvider createContainerProvider(int batteryLevel) {
-        return new MenuProvider() {
-
-            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                return new K9InventoryContainer(i, playerInventory, entity);
-            }
-
-            public Component getDisplayName() {
-                return Component.translatable("screen.k9mod.k9_gui").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE));
-            }
-        };
-    }
+//    private MenuProvider createContainerProvider(int batteryLevel) {
+//        return new MenuProvider() {
+//
+//            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
+//                return new K9InventoryContainer(i, playerInventory, entity);
+//            }
+//
+//            public Component getDisplayName() {
+//                return Component.translatable("screen.k9mod.k9_gui").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE));
+//            }
+//        };
+//    }
 
     @Override
     protected void onChangedBlock(BlockPos p_184594_1_) {
