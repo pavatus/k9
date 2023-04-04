@@ -1,0 +1,83 @@
+{
+  "k9_growl": {
+    "subtitle": "K9 growling",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_growl",
+        "stream": false
+      }
+    ]
+  },
+  "k9_whine": {
+    "subtitle": "K9 whining",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_whine",
+        "stream": false
+      }
+    ]
+  },
+  "k9_pant": {
+    "subtitle": "K9 panting",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_pant",
+        "stream": false
+      }
+    ]
+  },
+  "k9_hurt": {
+    "subtitle": "K9 hurt",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_hurt",
+        "stream": false
+      }
+    ]
+  },
+  "k9_death": {
+    "subtitle": "K9 died",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_die",
+        "stream": false
+      }
+    ]
+  },
+  "k9_master": {
+    "subtitle": "\"Master!\" - K9",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_master",
+        "stream": false
+      }
+    ]
+  },
+  "k9_restart": {
+    "subtitle": "K9 restarting",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_restart",
+        "stream": false
+      }
+    ]
+  },
+  "k9_run": {
+    "subtitle": "K9 running",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_run",
+        "stream": false
+      }
+    ]
+  },
+  "k9_defense": {
+    "subtitle": "K9 defending",
+    "sounds": [
+      {
+        "name": "k9mod:entities/k9/k9_defense",
+        "stream": false
+      }
+    ]
+  }
+}
