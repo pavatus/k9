@@ -62,11 +62,11 @@ public class K9Entity extends Wolf {
 
     @Override
     public void tick() {
-        if (battery <= 0) {
-            level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundSource.MASTER, 6, 1F);
-            this.setNoAi(true);
-            this.setInSittingPose(false);
-        }
+//        if (battery <= 0) {
+//            level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundSource.MASTER, 6, 1F);
+//            this.setNoAi(true);
+//            this.setInSittingPose(false);
+//        }
         if (this.isTame() && !this.isNoAi()) {
             // check if hopper below
             if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
@@ -120,23 +120,23 @@ public class K9Entity extends Wolf {
             }
             // @TODO Move towards blocks that are in its target list
         }
-        if (this.isNoAi()) {
-            //this.setHealth(getMaxHealth());
-            if(numeral >= 200) {
-                numeral = 0;
-            } else {
-                ++numeral;
-            }
-            if(numeral >= 100 && numeral <= 125) {
-                level.playSound(null, this.getOnPos(), SoundEvents.NOTE_BLOCK_BASS.get(), SoundSource.MASTER, 1F, 0.25F);
-            }
-            if(numeral >= 100 && numeral < 150) {
-                level.addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0.05,0);
-            }
-            level.addParticle(ParticleTypes.LARGE_SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0.1, 0);
-        } else {
-            numeral = 0;
-        }
+//        if (this.isNoAi()) {
+//            //this.setHealth(getMaxHealth());
+//            if(numeral >= 200) {
+//                numeral = 0;
+//            } else {
+//                ++numeral;
+//            }
+//            if(numeral >= 100 && numeral <= 125) {
+//                level.playSound(null, this.getOnPos(), SoundEvents.NOTE_BLOCK_BASS.get(), SoundSource.MASTER, 1F, 0.25F);
+//            }
+//            if(numeral >= 100 && numeral < 150) {
+//                level.addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0.05,0);
+//            }
+//            level.addParticle(ParticleTypes.LARGE_SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0.1, 0);
+//        } else {
+//            numeral = 0;
+//        }
         int dying = 0;
         if(this.isInWater()) {
             level.addParticle(ParticleTypes.LARGE_SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0.1, 0);
@@ -171,7 +171,7 @@ public class K9Entity extends Wolf {
         NBTUtil.inventoryFromNBT(this.inventory, nbt);
     }
 
-    public AttributeSupplier.Builder getK9Attributes() {
+    public static AttributeSupplier.Builder createK9Attributes() {
         return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.3F).add(Attributes.MAX_HEALTH, 20.0D).add(Attributes.ATTACK_DAMAGE, 2.0D);
     }
     @Override
@@ -240,11 +240,11 @@ public class K9Entity extends Wolf {
     @Override
     protected void onChangedBlock(BlockPos p_184594_1_) {
         super.onChangedBlock(p_184594_1_);
-        if (this.random.nextInt(9) == 0) { // 0.1% chance of it draining battery
-            if (this.battery > 0) {
-                this.battery--;
-            }
-        }
+//        if (this.random.nextInt(9) == 0) { // 0.1% chance of it draining battery
+//            if (this.battery > 0) {
+//                this.battery--;
+//            }
+//        }
     }
 
     @Override
