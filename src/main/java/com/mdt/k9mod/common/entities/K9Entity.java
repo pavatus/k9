@@ -1,6 +1,7 @@
 package com.mdt.k9mod.common.entities;
 
 import com.mdt.k9mod.common.items.BoneItem;
+import com.mdt.k9mod.container.K9InventoryContainer;
 import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
 import com.mdt.k9mod.util.NBTUtil;
@@ -36,11 +37,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HopperBlock;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
 
 public class K9Entity extends Wolf {
-    private final SimpleContainer inventory = new SimpleContainer(27);
+    private final ItemStackHandler inventory = new ItemStackHandler(27);
     private static final EntityDataAccessor<Byte> DATA_ID_FLAGS = SynchedEntityData.defineId(K9Entity.class, EntityDataSerializers.BYTE);
     private int numeral = 0;
     public int battery = 100;
@@ -76,10 +80,10 @@ public class K9Entity extends Wolf {
                     /*if(this.level.getBlockEntity(this.getOnPos()) instanceof HopperTileEntity) {
                         HopperTileEntity hopperTileEntity = (HopperTileEntity) this.level.getBlockEntity(this.getOnPos());
                     }*/
-                    if (this.hopperItem >= this.inventory.getContainerSize()) {
-                        this.hopperItem = 0;
-                    }
-                    Containers.dropItemStack(this.level, this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getItem(this.hopperItem));
+//                    if (this.hopperItem >= this.inventory.getContainerSize()) {
+//                        this.hopperItem = 0;
+//                    }
+//                    Containers.dropItemStack(this.level, this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getItem(this.hopperItem));
                     this.hopperItem++;
                     this.hopperCountdown = 1*20; // * 20 times by the length in seconds
                 }
@@ -95,11 +99,11 @@ public class K9Entity extends Wolf {
                         break;
                     }
                     // check if inventorys full
-                    if (this.inventory.getContainerSize() < 27) {
-                        this.inventory.addItem(entity.getItem());
+                    if (this.inventory.getSlots() < 27) {
+//                        this.inventory.(entity.getItem());
                         entity.kill();
                     }
-                    this.inventory.addItem(entity.getItem());
+//                    this.inventory.addItem(entity.getItem());
                     entity.kill();
                 }
             }
@@ -158,7 +162,7 @@ public class K9Entity extends Wolf {
         nbt.putInt("deadTime", this.numeral);
         nbt.putDouble("hurtCount", this.hurtCount);
         nbt.putInt("Battery", this.battery);
-        NBTUtil.inventoryToNBT(this.inventory, nbt);
+//        NBTUtil.inventoryToNBT(this.inventory, nbt);
     }
 
     @Override
@@ -168,7 +172,7 @@ public class K9Entity extends Wolf {
         this.numeral = nbt.getInt("deadTime");
         this.hurtCount = nbt.getDouble("hurtCount");
         this.battery = nbt.getInt("batteryLevel");
-        NBTUtil.inventoryFromNBT(this.inventory, nbt);
+//        NBTUtil.inventoryFromNBT(this.inventory, nbt);
     }
 
     public static AttributeSupplier.Builder createK9Attributes() {
@@ -223,19 +227,6 @@ public class K9Entity extends Wolf {
     public boolean isFood(ItemStack pStack) {
         return super.isFood(new ItemStack(Items.REDSTONE));
     }
-
-//    private MenuProvider createContainerProvider(int batteryLevel) {
-//        return new MenuProvider() {
-//
-//            public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-//                return new K9InventoryContainer(i, playerInventory, entity);
-//            }
-//
-//            public Component getDisplayName() {
-//                return Component.translatable("screen.k9mod.k9_gui").setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE));
-//            }
-//        };
-//    }
 
     @Override
     protected void onChangedBlock(BlockPos p_184594_1_) {
@@ -324,7 +315,8 @@ public class K9Entity extends Wolf {
                         pPlayer.sendSystemMessage(Component.translatable("This K9 is not yours!")
                                 .setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED).withItalic(true)));
                     }
-//                    pPlayer.openMenu(this.createContainerProvider(this.battery));
+                    final MenuProvider container = new SimpleMenuProvider(K9InventoryContainer.getServerContainer(this,this.battery), Component.translatable("aaa"));
+                    NetworkHooks.openScreen((ServerPlayer) pPlayer, container);
                     this.level.playSound(null, this.getOnPos(), K9modSounds.K9_MASTER.get(), SoundSource.MASTER, 5, 1);
                     //System.out.println(item + " | " + this.isNoAi() + " | " + hurtCount + " isTame?: " + this.isTame());
                 }

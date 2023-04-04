@@ -59,8 +59,9 @@ public class K9Mod
         K9modEntities.ENTITIES.register(bus);
         K9modItems.ITEMS.register(bus);
         K9modBlocks.BLOCKS.register(bus);
+        K9Containers.CONTAINERS.register(bus);
+
         bus.addListener(this::registerTabs);
-//        K9Containers.CONTAINERS.register(bus);
     }
 
     private void registerTabs(CreativeModeTabEvent.Register event)
