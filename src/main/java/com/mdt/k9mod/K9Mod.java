@@ -1,17 +1,29 @@
 package com.mdt.k9mod;
 
 import com.mdt.k9mod.core.init.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.IModBusEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +36,8 @@ public class K9Mod
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "k9mod";
+
+    public static CreativeModeTab K9_TAB;
 
     public K9Mod() {
 
@@ -44,8 +58,27 @@ public class K9Mod
         K9modSounds.SOUNDS.register(bus);
         K9modEntities.ENTITIES.register(bus);
         K9modItems.ITEMS.register(bus);
-//        K9modBlocks.BLOCKS.register(bus);
+        K9modBlocks.BLOCKS.register(bus);
+        bus.addListener(this::registerTabs);
 //        K9Containers.CONTAINERS.register(bus);
+    }
+
+    private void registerTabs(CreativeModeTabEvent.Register event)
+    {
+        K9_TAB = event.registerCreativeModeTab(new ResourceLocation(MOD_ID, "k9_tab"), builder -> builder
+                .icon(() -> new ItemStack(K9modItems.K9_BONE.get()))
+                .title(Component.translatable("tabs.k9mod.k9_tab"))
+                .displayItems((featureFlags, output) -> {
+                    // Add all the items in registry
+                    for (RegistryObject<Item> item : K9modItems.ITEMS.getEntries()) {
+                        output.accept(item.get());
+                    }
+                    // Add all the blocks in registry
+                    for (RegistryObject<Block> block : K9modBlocks.BLOCKS.getEntries()) {
+                        output.accept(block.get().asItem());
+                    }
+                })
+        );
     }
 
     private void setup(final FMLCommonSetupEvent event)
