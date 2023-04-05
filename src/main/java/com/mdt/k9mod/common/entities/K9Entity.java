@@ -302,6 +302,7 @@ public class K9Entity extends Wolf {
             return flag ? InteractionResult.CONSUME : InteractionResult.PASS;
 
         } else {
+            // mentally prepare yourself if you're gonna work on this bit of the code - Bo
             if (this.isTame()) {
                 if (pPlayer.isCrouching() && !this.isNoAi()) {
                     if(this.getOwner() == pPlayer) {

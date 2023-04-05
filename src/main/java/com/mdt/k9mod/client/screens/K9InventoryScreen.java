@@ -21,7 +21,7 @@ public class K9InventoryScreen extends AbstractContainerScreen<K9InventoryContai
             super(container, playerInv, title);
             this.leftPos = 0;
             this.topPos = 0;
-            }
+    }
 
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
