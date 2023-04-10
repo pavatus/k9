@@ -1,10 +1,9 @@
 package com.mdt.k9mod.common.entities;
 
 import com.mdt.k9mod.common.items.BoneItem;
-import com.mdt.k9mod.container.K9InventoryContainer;
+import com.mdt.k9mod.common.container.K9InventoryContainer;
 import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
-import com.mdt.k9mod.util.NBTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,23 +30,23 @@ import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HopperBlock;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
 
 public class K9Entity extends Wolf {
-    private final ItemStackHandler inventory = new ItemStackHandler(27);
+    public final ItemStackHandler inventory = new ItemStackHandler(27);
     private static final EntityDataAccessor<Byte> DATA_ID_FLAGS = SynchedEntityData.defineId(K9Entity.class, EntityDataSerializers.BYTE);
     private int numeral = 0;
     public int battery = 100;
+    private final Item TAME_ITEM = Items.IRON_INGOT;
     private int hopperCountdown,hopperItem = 0;
     private double hurtCount = 0;
 
@@ -60,68 +59,71 @@ public class K9Entity extends Wolf {
         return list;
     }
 
+    private void moveTowardsItemAndPickup() {
+        // check for nearby items and pick them up
+        List<ItemEntity> entities = getNearbyItems(this, 1.5);
+        for (ItemEntity entity : entities) {
+            if (entity.isOnGround()) {
+                // stop if on a hopper
+                if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
+                    break;
+                }
+                // check if inventorys full
+                if (this.inventory.getSlots() < 27) {
+//                        this.inventory.(entity.getItem());
+                    entity.kill();
+                }
+                ItemHandlerHelper.insertItemStacked(this.inventory, entity.getItem(), true);
+                entity.kill();
+            }
+        }
+        // move towards the first item in the list thats on the ground
+        List<ItemEntity> nearbyItems = getNearbyItems(this, 4);
+        if (nearbyItems.size() != 0) {
+            for (ItemEntity nearbyItem : nearbyItems) {
+                // stop if on a hopper
+                if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
+                    break;
+                }
+                if (nearbyItem.isOnGround()) {
+                    this.getNavigation().moveTo(nearbyItem.getX(), nearbyItem.getY(), nearbyItem.getZ(), Attributes.MOVEMENT_SPEED.getDefaultValue());
+                    break;
+                }
+            }
+        }
+    }
+
+    private void checkForHopperAndDrop() {
+        // check if hopper below
+        if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
+            this.getNavigation().moveTo(this.getOnPos().getX(), this.getOnPos().getY(), this.getOnPos().getZ(), Attributes.MOVEMENT_SPEED.getDefaultValue());
+
+            // goes through every item in the inventory and drops it if the countdowns okay
+            if (!this.isOnCooldown()) {
+//                    if(this.level.getBlockEntity(this.getOnPos()) instanceof HopperBlockEntity) {
+//                        HopperBlockEntity hopperBlockEntity = (HopperBlockEntity) this.level.getBlockEntity(this.getOnPos());
+//                    }
+                    if (this.hopperItem >= this.inventory.getSlots()) {
+                        this.hopperItem = 0;
+                    }
+                    Containers.dropItemStack(this.level, this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getStackInSlot(this.hopperItem));
+                this.hopperItem++;
+                this.hopperCountdown = 1*20; // * 20 times by the length in seconds
+            }
+
+            this.hopperCountdown--;
+        }
+    }
+
     private boolean isOnCooldown() {
         return this.hopperCountdown > 0;
     }
 
     @Override
     public void tick() {
-//        if (battery <= 0) {
-//            level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundSource.MASTER, 6, 1F);
-//            this.setNoAi(true);
-//            this.setInSittingPose(false);
-//        }
         if (this.isTame() && !this.isNoAi()) {
-            // check if hopper below
-            if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
-                this.getNavigation().moveTo(this.getOnPos().getX(), this.getOnPos().getY(), this.getOnPos().getZ(), Attributes.MOVEMENT_SPEED.getDefaultValue());
-                // goes through every item in the inventory and drops it if the countdowns okay
-                if (!isOnCooldown()) {
-                    /*if(this.level.getBlockEntity(this.getOnPos()) instanceof HopperTileEntity) {
-                        HopperTileEntity hopperTileEntity = (HopperTileEntity) this.level.getBlockEntity(this.getOnPos());
-                    }*/
-//                    if (this.hopperItem >= this.inventory.getContainerSize()) {
-//                        this.hopperItem = 0;
-//                    }
-//                    Containers.dropItemStack(this.level, this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getItem(this.hopperItem));
-                    this.hopperItem++;
-                    this.hopperCountdown = 1*20; // * 20 times by the length in seconds
-                }
-                this.hopperCountdown--;
-            }
-
-            // check for nearby items and pick them up
-            List<ItemEntity> entities = getNearbyItems(this, 1.5);
-            for (ItemEntity entity : entities) {
-                if (entity.isOnGround()) {
-                    // stop if on a hopper
-                    if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
-                        break;
-                    }
-                    // check if inventorys full
-                    if (this.inventory.getSlots() < 27) {
-//                        this.inventory.(entity.getItem());
-                        entity.kill();
-                    }
-//                    this.inventory.addItem(entity.getItem());
-                    entity.kill();
-                }
-            }
-            // move towards the first item in the list thats on the ground
-            List<ItemEntity> nearbyItems = getNearbyItems(this, 4);
-            if (nearbyItems.size() != 0) {
-                for(int i = 0; i < nearbyItems.size(); i++) {
-                    // stop if on a hopper
-                    if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
-                        break;
-                    }
-                    ItemEntity checkedItem = nearbyItems.get(i);
-                    if (checkedItem.isOnGround()) {
-                        this.getNavigation().moveTo(checkedItem.getX(), checkedItem.getY(), checkedItem.getZ(), Attributes.MOVEMENT_SPEED.getDefaultValue());
-                        break;
-                    }
-                }
-            }
+            this.checkForHopperAndDrop();
+            this.moveTowardsItemAndPickup();
             // @TODO Move towards blocks that are in its target list
         }
 //        if (this.isNoAi()) {
@@ -141,7 +143,7 @@ public class K9Entity extends Wolf {
 //        } else {
 //            numeral = 0;
 //        }
-        int dying = 0;
+//        int dying = 0;
         if(this.isInWater()) {
             level.addParticle(ParticleTypes.LARGE_SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0.1, 0);
             level.addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0.05,0);
@@ -238,113 +240,149 @@ public class K9Entity extends Wolf {
 //        }
     }
 
+    private void tameAndStop(Player pPlayer) {
+        this.tame(pPlayer);
+        this.navigation.stop();
+        this.setTarget(null);
+        this.setOrderedToSit(true);
+    }
+
+    // Oh god now this part of the code. Mercy me Lord. :pray:
     @Override
     public boolean hurt(DamageSource source, float damage) {
+        // If we have brain then
+        // Add the damage to the hurtcount
+        // Play hurt sound
         if (!this.isNoAi()) {
             hurtCount += damage;
             level.playSound(null, this.getOnPos(), K9modSounds.K9_HURT.get(), SoundSource.MASTER, 5, 1);
+            damage = 0;
         }
 
+        // If the hurtcount is over 35 then
+        // Do death sound
+        // Disable AI
+        // Sit down
         if (hurtCount >= 35) {
             level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundSource.MASTER, 6, 1F);
             this.setNoAi(true);
             this.setInSittingPose(false);
         }
 
-        if (source.getEntity() instanceof ServerPlayer) {
-            ServerPlayer pPlayer = (ServerPlayer) source.getEntity();
-            ItemStack itemstack = pPlayer.getMainHandItem();
-            Item item = itemstack.getItem();
-            if (item == K9modItems.K9_WRENCH.get()) {
-                if (this.isNoAi()) {
-                    this.setHealth(20.0F);
-                    if(!pPlayer.getAbilities().instabuild) {
-                        itemstack.setDamageValue(1);
-                    }
-                    pPlayer.sendSystemMessage(Component.translatable("K9 is back to full health!")
-                            .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(true)));
-                    hurtCount = 0;
-                    this.setNoAi(false);
-                    level.playSound(null, this.getOnPos(), K9modSounds.K9_RESTART.get(), SoundSource.MASTER, 4, 1);
-                } else {
-                    this.setHealth(20.0F);
-                    if(!pPlayer.getAbilities().instabuild) {
-                        itemstack.hurtAndBreak(1, pPlayer, player1 -> player1.broadcastBreakEvent(pPlayer.getUsedItemHand()));
-                    }
-                    if(itemstack.getDamageValue() > 16) {
-                        pPlayer.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-                        level.playSound(pPlayer, this.getOnPos(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 10, 1);
-                    } else {
-                        if(!pPlayer.getAbilities().instabuild) {
-                            itemstack.hurtAndBreak(1, pPlayer, player1 -> player1.broadcastBreakEvent(pPlayer.getUsedItemHand()));
-                        }
-                    }
-                    pPlayer.sendSystemMessage(Component.translatable("K9 is back to full health!")
-                            .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(true)));
-                    hurtCount = 0;
-                    level.playSound(null, this.getOnPos(), SoundEvents.ANVIL_HIT, SoundSource.MASTER, 4, 1);
-                }
+        if (!(source.getEntity() instanceof ServerPlayer)) { return super.hurt(source, damage); }
+
+        ServerPlayer pPlayer = (ServerPlayer) source.getEntity();
+        ItemStack itemstack = pPlayer.getMainHandItem();
+        Item item = itemstack.getItem();
+
+        if (!(item == K9modItems.K9_WRENCH.get())) { return super.hurt(source, damage); }
+        // From this point on we know the items a wrench ^
+
+        // If we dont have a brain then restart
+        if (this.isNoAi()) {
+            if(!pPlayer.getAbilities().instabuild) {
+                itemstack.setDamageValue(1);
             }
+
+            restartHeal(pPlayer,this);
         }
-        if(!this.isNoAi()) {
-            return super.hurt(source,0);
-        } else {
-            return super.hurt(source, damage);
+        // if we do then heal normally
+        else {
+            itemstack.hurtAndBreak(1, pPlayer, player1 -> player1.broadcastBreakEvent(pPlayer.getUsedItemHand()));
+
+            heal(pPlayer, this);
         }
+
+        return super.hurt(source,damage);
+    }
+
+    public void heal(Player pPlayer, K9Entity k9) {
+        k9.setHealth(20.0F);
+        pPlayer.sendSystemMessage(Component.translatable("K9 is back to full health!")
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(true)));
+        k9.hurtCount = 0;
+        level.playSound(null, this.getOnPos(), SoundEvents.ANVIL_HIT, SoundSource.MASTER, 4, 1);
+    }
+
+    public void restartHeal(Player pPlayer, K9Entity k9) {
+        k9.setHealth(20.0F);
+        k9.hurtCount = 0;
+        k9.setNoAi(false);
+        k9.level.playSound(null, this.getOnPos(), K9modSounds.K9_RESTART.get(), SoundSource.MASTER, 4, 1);
+
+        pPlayer.sendSystemMessage(Component.translatable("K9 is back to full health!")
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(true)));
+    }
+
+    public static void sendBatteryChat(Player pPlayer, K9Entity k9) {
+        pPlayer.sendSystemMessage(Component.translatable("Remaining Battery: " + k9.battery + "%")
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN).withItalic(true).withBold(true)));
+    }
+
+    public static void sendNotOwnerChat(Player pPlayer) {
+        pPlayer.sendSystemMessage(Component.translatable("This K9 is not yours!")
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED).withItalic(true)));
+    }
+
+    public static void openInventoryMenu(Player pPlayer, K9Entity k9) {
+        if (k9.level.isClientSide) {return;}
+
+        final MenuProvider container = new SimpleMenuProvider(K9InventoryContainer.getServerContainer(k9,k9.battery), Component.translatable("aaa"));
+        NetworkHooks.openScreen((ServerPlayer) pPlayer, container);
+        k9.level.playSound(null, k9.getOnPos(), K9modSounds.K9_MASTER.get(), SoundSource.MASTER, 5, 1);
     }
 
     @Override
     public InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
         Item item = itemstack.getItem();
+
+        // I dont even know
         if (this.level.isClientSide) {
             boolean flag = this.isOwnedBy(pPlayer) || this.isTame() || item == Items.IRON_INGOT && !this.isTame() && !this.isAngry();
             return flag ? InteractionResult.CONSUME : InteractionResult.PASS;
+        }
+        // We know that everything past this point is on the server as we returned in ^ that bit of code above
 
-        } else {
-            // mentally prepare yourself if you're gonna work on this bit of the code - Bo
-            if (this.isTame()) {
-                if (pPlayer.isCrouching() && !this.isNoAi()) {
-                    if(this.getOwner() == pPlayer) {
-                        if (item == K9modItems.K9_BONE.get()) {
-                            ((BoneItem) item).linkBone(this, pPlayer);
-                        } else if (item == K9modItems.K9_WRENCH.get()) {
-                            pPlayer.sendSystemMessage(Component.translatable("Remaining Battery: " + this.battery + "%")
-                                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN).withItalic(true).withBold(true)));
-                        }
-                    } else {
-                        pPlayer.sendSystemMessage(Component.translatable("This K9 is not yours!")
-                                .setStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED).withItalic(true)));
+        // mentally prepare yourself if you're gonna work on this bit of the code - Bo
+        // Don't worry, I annotated and re-did some of the Loqor disease.
+        if (this.isTame()) {
+
+            // if shift right-clicking and we have a brain
+            if (pPlayer.isCrouching() && !this.isNoAi()) {
+                if(this.getOwner() == pPlayer) {
+                    // Link the bone if holding metal bone
+                    if (item == K9modItems.K9_BONE.get()) {
+                        ((BoneItem) item).linkBone(this, pPlayer);
                     }
-                    final MenuProvider container = new SimpleMenuProvider(K9InventoryContainer.getServerContainer(this,this.battery), Component.translatable("aaa"));
-                    NetworkHooks.openScreen((ServerPlayer) pPlayer, container);
-                    this.level.playSound(null, this.getOnPos(), K9modSounds.K9_MASTER.get(), SoundSource.MASTER, 5, 1);
-                    //System.out.println(item + " | " + this.isNoAi() + " | " + hurtCount + " isTame?: " + this.isTame());
+                    // If holding wrench then send battery chat
+                    else if (item == K9modItems.K9_WRENCH.get()) {
+                        sendBatteryChat(pPlayer,this);
+                    }
+                }
+                // If this K9 is not owned by that player we send an error message
+                else {
+                    sendNotOwnerChat(pPlayer);
+                }
+                // If the player's hand is empty, we open the inventory menu
+                if (item == Items.AIR) {
+                    openInventoryMenu(pPlayer,this);
+                }
+            }
+            // If the item is food AND ( the health isnt full OR the hurt count (whatever TF that is) is greater than 0) we heal the K9
+            if (this.isFood(itemstack) && (this.getHealth() < this.getMaxHealth() || this.hurtCount > 0) ) {
+                // Only shrink in non-creative
+                if (!pPlayer.getAbilities().instabuild) {
+                    itemstack.shrink(1);
                 }
 
-                if (this.isFood(itemstack) && (this.getHealth() < this.getMaxHealth() || this.hurtCount > 0) ) {
-                    if (!pPlayer.getAbilities().instabuild) {
-                        itemstack.shrink(1);
-                    }
+                this.heal((float)item.getFoodProperties().getNutrition());
+                return InteractionResult.SUCCESS;
+            }
 
-                    this.heal((float)item.getFoodProperties().getNutrition());
-                    return InteractionResult.SUCCESS;
-                }
-
-                if (!(item instanceof DyeItem)) {
-                    InteractionResult interactionResult = super.mobInteract(pPlayer, pHand);
-                    if ((!InteractionResult.CONSUME.consumesAction() || this.isBaby()) && this.isOwnedBy(pPlayer)) {
-                        this.setOrderedToSit(!this.isOrderedToSit());
-                        this.jumping = false;
-                        this.navigation.stop();
-                        this.setTarget(null);
-                        return InteractionResult.SUCCESS;
-                    }
-
-                    return interactionResult;
-                }
-
-                DyeColor dyecolor = ((DyeItem)item).getDyeColor();
+            // Dye the K9 if the item is a dye
+            if (item instanceof DyeItem) {
+                DyeColor dyecolor = ((DyeItem) item).getDyeColor();
                 if (dyecolor != this.getCollarColor()) {
                     this.setCollarColor(dyecolor);
                     if (!pPlayer.getAbilities().instabuild) {
@@ -354,26 +392,39 @@ public class K9Entity extends Wolf {
 
                     return InteractionResult.SUCCESS;
                 }
-
-            } else if (item == Items.IRON_INGOT && !this.isAngry()) {
-                if (!pPlayer.getAbilities().instabuild) {
-                    itemstack.shrink(1);
-                }
-
-                if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, pPlayer)) {
-                    this.tame(pPlayer);
+            }
+            // Otherwise do normal things
+            else {
+                InteractionResult interactionResult = super.mobInteract(pPlayer, pHand);
+                if ((!InteractionResult.CONSUME.consumesAction() || this.isBaby()) && this.isOwnedBy(pPlayer)) {
+                    this.setOrderedToSit(!this.isOrderedToSit());
+                    this.jumping = false;
                     this.navigation.stop();
                     this.setTarget(null);
-                    this.setOrderedToSit(true);
-                    this.level.broadcastEntityEvent(this, (byte)7);
-                } else {
-                    this.level.broadcastEntityEvent(this, (byte)6);
+                    return InteractionResult.SUCCESS;
                 }
 
-                return InteractionResult.SUCCESS;
+                return interactionResult;
+            }
+        }
+        // If the item being held is the tame item and we are not angry and we are not tamed.
+        if (item == TAME_ITEM && !this.isAngry() && !this.isTame()) {
+            // Only shrink if not in creative
+            if (!pPlayer.getAbilities().instabuild) {
+                itemstack.shrink(1);
             }
 
-            return super.mobInteract(pPlayer, pHand);
+            // Random 1/3 chance to tame the K9
+            if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, pPlayer)) {
+                this.tameAndStop(pPlayer);
+                this.level.broadcastEntityEvent(this, (byte)7);
+            } else {
+                this.level.broadcastEntityEvent(this, (byte)6);
+            }
+
+            return InteractionResult.SUCCESS;
         }
+
+        return super.mobInteract(pPlayer, pHand);
     }
 }

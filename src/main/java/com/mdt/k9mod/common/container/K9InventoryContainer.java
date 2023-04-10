@@ -1,13 +1,11 @@
-package com.mdt.k9mod.container;
+package com.mdt.k9mod.common.container;
 
 import com.mdt.k9mod.common.entities.K9Entity;
 import com.mdt.k9mod.core.init.K9Containers;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -90,6 +88,6 @@ public class K9InventoryContainer extends AbstractContainerMenu {
     }
 
     public static MenuConstructor getServerContainer(K9Entity entity, int battery) {
-        return (id, playerInv, player) -> new K9InventoryContainer(id, playerInv, new ItemStackHandler(27) , battery);
+        return (id, playerInv, player) -> new K9InventoryContainer(id, playerInv, entity.inventory , battery);
     }
 }

@@ -1,16 +1,13 @@
 package com.mdt.k9mod.core.init;
 
 import com.mdt.k9mod.K9Mod;
-import com.mdt.k9mod.common.entities.K9Entity;
-import com.mdt.k9mod.container.K9InventoryContainer;
+import com.mdt.k9mod.common.container.K9InventoryContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.awt.*;
 
 public class K9Containers {
     public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, K9Mod.MOD_ID);
