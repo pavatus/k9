@@ -68,12 +68,8 @@ public class K9Entity extends Wolf {
                 if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
                     break;
                 }
-                // check if inventorys full
-                if (this.inventory.getSlots() < 27) {
-//                        this.inventory.(entity.getItem());
-                    entity.kill();
-                }
-                ItemHandlerHelper.insertItemStacked(this.inventory, entity.getItem(), true);
+
+                ItemHandlerHelper.insertItemStacked(this.inventory, entity.getItem(), false);
                 entity.kill();
             }
         }
@@ -96,17 +92,17 @@ public class K9Entity extends Wolf {
     private void checkForHopperAndDrop() {
         // check if hopper below
         if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
-            this.getNavigation().moveTo(this.getOnPos().getX(), this.getOnPos().getY(), this.getOnPos().getZ(), Attributes.MOVEMENT_SPEED.getDefaultValue());
+            if (this.hopperItem >= this.inventory.getSlots()) {
+                this.hopperItem = 0;
+            }
+
+            this.setOrderedToSit(true);
 
             // goes through every item in the inventory and drops it if the countdowns okay
             if (!this.isOnCooldown()) {
-//                    if(this.level.getBlockEntity(this.getOnPos()) instanceof HopperBlockEntity) {
-//                        HopperBlockEntity hopperBlockEntity = (HopperBlockEntity) this.level.getBlockEntity(this.getOnPos());
-//                    }
-                    if (this.hopperItem >= this.inventory.getSlots()) {
-                        this.hopperItem = 0;
-                    }
-                    Containers.dropItemStack(this.level, this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getStackInSlot(this.hopperItem));
+
+                Containers.dropItemStack(this.level, this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getStackInSlot(this.hopperItem));
+
                 this.hopperItem++;
                 this.hopperCountdown = 1*20; // * 20 times by the length in seconds
             }
@@ -327,7 +323,7 @@ public class K9Entity extends Wolf {
     public static void openInventoryMenu(Player pPlayer, K9Entity k9) {
         if (k9.level.isClientSide) {return;}
 
-        final MenuProvider container = new SimpleMenuProvider(K9InventoryContainer.getServerContainer(k9,k9.battery), Component.translatable("aaa"));
+        final MenuProvider container = new SimpleMenuProvider(K9InventoryContainer.getServerContainer(k9,k9.battery), Component.translatable("screen.k9mod.k9_gui"));
         NetworkHooks.openScreen((ServerPlayer) pPlayer, container);
         k9.level.playSound(null, k9.getOnPos(), K9modSounds.K9_MASTER.get(), SoundSource.MASTER, 5, 1);
     }

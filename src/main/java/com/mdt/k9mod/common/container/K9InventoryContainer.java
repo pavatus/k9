@@ -90,4 +90,8 @@ public class K9InventoryContainer extends AbstractContainerMenu {
     public static MenuConstructor getServerContainer(K9Entity entity, int battery) {
         return (id, playerInv, player) -> new K9InventoryContainer(id, playerInv, entity.inventory , battery);
     }
+
+    public static K9InventoryContainer getClientMenu(int id, Inventory playerInv) {
+        return new K9InventoryContainer(id, playerInv, new ItemStackHandler(27),0);
+    }
 }
