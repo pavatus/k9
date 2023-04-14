@@ -12,18 +12,22 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class K9InventoryScreen extends AbstractContainerScreen<K9InventoryContainer> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/gui/k9_inventory_gui.png");
+    private int battery;
 
     public K9InventoryScreen(K9InventoryContainer container, Inventory playerInv, Component title) {
             super(container, playerInv, title);
             this.leftPos = 0;
             this.topPos = 0;
+            this.battery = container.getBattery();
     }
 
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
             super.render(stack, mouseX, mouseY, partialTicks);
-            this.font.draw(stack, this.title, this.leftPos + 8, this.topPos + 7, 0xf5f5f5);
-            this.font.draw(stack, this.playerInventoryTitle, this.leftPos + 8, this.topPos + 73, 0xf5f5f5);
+
+            this.font.draw(stack, this.title, this.leftPos + 8, this.topPos + 7, 0xf5f5f5); // "screen.k9mod.k9_gui" text
+            this.font.draw(stack, this.playerInventoryTitle, this.leftPos + 8, this.topPos + 73, 0xf5f5f5); // "Inventory" text
+            this.font.draw(stack, this.battery + "%", (this.width - font.width(this.battery + "%") + 130) / 2, (this.height - 155) / 2, 0xf5f5f5); // "100%" text
     }
 
     @Override

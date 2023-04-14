@@ -160,7 +160,7 @@ public class K9Entity extends Wolf {
 
         nbt.putInt("deadTime", this.numeral);
         nbt.putDouble("hurtCount", this.hurtCount);
-        nbt.putInt("Battery", this.battery);
+        nbt.putInt("batteryLevel", this.battery);
         NBTUtil.inventoryToNBT(this.inventory, nbt);
     }
 

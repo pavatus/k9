@@ -16,7 +16,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public class K9InventoryContainer extends AbstractContainerMenu {
 
 //    private final IInventory container;
-//    public int battery;
+    public int battery;
 
 //    private final ContainerLevelAccess containerAccess;
 
@@ -25,14 +25,15 @@ public class K9InventoryContainer extends AbstractContainerMenu {
         this(id, playerInv, new ItemStackHandler(27), 0);
     }
 
-//    public int getBattery() {
-//        return this.battery;
-//    }
+    public int getBattery() {
+        return this.battery;
+    }
 
     // Server constructor
     public K9InventoryContainer(int id, Inventory playerInv, IItemHandler slots, int batteryLevel) {
         super(K9Containers.K9_CONTAINER.get(), id);
-//        this.containerAccess = ContainerLevelAccess.create(playerInv.player.level, pos);
+        this.battery = batteryLevel;
+        System.out.println(this.battery);
 
         final int slotSizePlus2 = 18, startX = 8, startY = 86, hotbarY = 144, inventoryY = 18;
 
