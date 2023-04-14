@@ -16,7 +16,7 @@
 //
 //public class K9EntityRenderer extends MobRenderer<K9Entity, K9EntityModel<K9Entity>> {
 //
-//    public static final ResourceLocation RED_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9.png");
+//    public static final ResourceLocation RED_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_red.png");
 //    public static final ResourceLocation WHITE_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_white.png");
 //    public static final ResourceLocation ORANGE_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_orange.png");
 //    public static final ResourceLocation PINK_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_pink.png");
