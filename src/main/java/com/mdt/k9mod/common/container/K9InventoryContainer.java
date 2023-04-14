@@ -22,7 +22,7 @@ public class K9InventoryContainer extends AbstractContainerMenu {
 
     // Client constructor
     public K9InventoryContainer(int id, Inventory playerInv) {
-        this(id, playerInv, new ItemStackHandler(27), 50);
+        this(id, playerInv, new ItemStackHandler(27), 100);
     }
 
     public int getBattery() {

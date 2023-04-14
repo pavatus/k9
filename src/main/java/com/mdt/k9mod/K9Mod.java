@@ -83,7 +83,7 @@ public class K9Mod
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        MenuScreens.register(K9Containers.K9_CONTAINER.get(), K9InventoryScreen::new);
+        event.enqueueWork(() -> MenuScreens.register(K9Containers.K9_CONTAINER.get(), K9InventoryScreen::new));
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

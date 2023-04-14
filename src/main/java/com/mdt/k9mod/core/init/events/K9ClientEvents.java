@@ -4,6 +4,7 @@ import com.mdt.k9mod.K9Mod;
 import com.mdt.k9mod.client.models.entities.K9Model;
 import com.mdt.k9mod.client.renderers.entity.K9Renderer;
 import com.mdt.k9mod.core.init.K9modEntities;
+import com.mojang.blaze3d.platform.ScreenManager;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
