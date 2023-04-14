@@ -4,6 +4,7 @@ import com.mdt.k9mod.common.items.BoneItem;
 import com.mdt.k9mod.common.container.K9InventoryContainer;
 import com.mdt.k9mod.core.init.K9modItems;
 import com.mdt.k9mod.core.init.K9modSounds;
+import com.mdt.k9mod.util.NBTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -160,7 +161,7 @@ public class K9Entity extends Wolf {
         nbt.putInt("deadTime", this.numeral);
         nbt.putDouble("hurtCount", this.hurtCount);
         nbt.putInt("Battery", this.battery);
-//        NBTUtil.inventoryToNBT(this.inventory, nbt);
+        NBTUtil.inventoryToNBT(this.inventory, nbt);
     }
 
     @Override
@@ -170,7 +171,7 @@ public class K9Entity extends Wolf {
         this.numeral = nbt.getInt("deadTime");
         this.hurtCount = nbt.getDouble("hurtCount");
         this.battery = nbt.getInt("batteryLevel");
-//        NBTUtil.inventoryFromNBT(this.inventory, nbt);
+        NBTUtil.inventoryFromNBT(this.inventory, nbt);
     }
 
     public static AttributeSupplier.Builder createK9Attributes() {
