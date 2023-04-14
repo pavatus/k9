@@ -322,7 +322,7 @@ public class K9Entity extends Wolf {
     }
 
     public static void openInventoryMenu(Player pPlayer, K9Entity k9) {
-        if (k9.level.isClientSide) {return;}
+//        if (k9.level.isClientSide) {return;}
 
         final MenuProvider container = new SimpleMenuProvider(K9InventoryContainer.getServerContainer(k9,k9.battery), Component.translatable("screen.k9mod.k9_gui"));
         NetworkHooks.openScreen((ServerPlayer) pPlayer, container);

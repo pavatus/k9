@@ -22,7 +22,7 @@ public class K9InventoryContainer extends AbstractContainerMenu {
 
     // Client constructor
     public K9InventoryContainer(int id, Inventory playerInv) {
-        this(id, playerInv, new ItemStackHandler(27), 0);
+        this(id, playerInv, new ItemStackHandler(27), 50);
     }
 
     public int getBattery() {
@@ -32,6 +32,7 @@ public class K9InventoryContainer extends AbstractContainerMenu {
     // Server constructor
     public K9InventoryContainer(int id, Inventory playerInv, IItemHandler slots, int batteryLevel) {
         super(K9Containers.K9_CONTAINER.get(), id);
+
         this.battery = batteryLevel;
         System.out.println(this.battery);
 
@@ -93,6 +94,6 @@ public class K9InventoryContainer extends AbstractContainerMenu {
     }
 
     public static K9InventoryContainer getClientMenu(int id, Inventory playerInv) {
-        return new K9InventoryContainer(id, playerInv, new ItemStackHandler(27),0);
+        return new K9InventoryContainer(id, playerInv);
     }
 }

@@ -15,10 +15,11 @@ public class K9InventoryScreen extends AbstractContainerScreen<K9InventoryContai
     private int battery;
 
     public K9InventoryScreen(K9InventoryContainer container, Inventory playerInv, Component title) {
-            super(container, playerInv, title);
-            this.leftPos = 0;
-            this.topPos = 0;
-            this.battery = container.getBattery();
+        super(container, playerInv, title);
+        this.leftPos = 0;
+        this.topPos = 0;
+        this.imageHeight++;
+        this.battery = container.getBattery();
     }
 
     @Override
