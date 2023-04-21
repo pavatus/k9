@@ -13,7 +13,7 @@ public class K9Renderer extends MobRenderer<K9Entity, K9Model<K9Entity>> {
     public static final ResourceLocation SCARF_TEXTURE = new ResourceLocation(K9Mod.MOD_ID, "textures/entity/k9_skins/k9_scarf.png");
 
     public K9Renderer(EntityRendererProvider.Context context) {
-        super(context, new K9Model<>(context.bakeLayer(K9Model.LAYER_LOCATION)), 0.5f);
+        super(context, new K9Model<>(context.bakeLayer(K9Model.LAYER_LOCATION)), 0.35f);
         this.model = new K9Model<>(context.bakeLayer(K9Model.LAYER_LOCATION));
     }
 
