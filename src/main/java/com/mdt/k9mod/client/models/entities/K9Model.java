@@ -4,6 +4,7 @@ package com.mdt.k9mod.client.models.entities;// Made with Blockbench 4.6.5
 
 
 import com.mdt.k9mod.K9Mod;
+import com.mdt.k9mod.common.entities.K9Entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -108,11 +109,49 @@ public class K9Model<T extends Entity> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.dog.getChild("head").xRot = headPitch * ((float) Math.PI / 300f);
+		this.dog.getChild("head").yRot = netHeadYaw * ((float) Math.PI / 300f);
+	}
 
+	@Override
+	public void prepareMobModel(T entity, float p_102615_, float p_102616_, float p_102617_) {
+		if (!(entity instanceof K9Entity k9)) return;
+
+		// I cant be assed making the .getChild() into variables so just cope or do it urself
+		if (k9.isAngry()) {
+			this.dog.getChild("tail").yRot = 0.0F;
+
+			this.dog.getChild("head").getChild("left_ear").yRot = ++this.dog.getChild("head").getChild("left_ear").yRot / 8;
+			this.dog.getChild("head").getChild("right_ear").yRot = --this.dog.getChild("head").getChild("right_ear").yRot / 8;
+		} else {
+			this.dog.getChild("tail").yRot = (float) (Math.cos(p_102615_ * 0.6662F) * 1.4F * p_102616_);
+			this.dog.getChild("head").getChild("left_ear").yRot = 0.0F;
+			this.dog.getChild("head").getChild("right_ear").yRot = 0.0F;
+		}
+		if (k9.isInSittingPose()) {
+			this.dog.getChild("body").setPos(0.0F, 25.0F, 0.0F);
+			this.dog.getChild("body").xRot = ((float) Math.PI * 180F);
+			this.dog.getChild("head").setPos(-13.2793F, 18.8522F, 0.0F);
+		} else {
+			this.dog.getChild("body").setPos(0.0F, 24F, 0.0F);
+			this.dog.getChild("body").xRot = ((float) Math.PI * 180F);
+			this.dog.getChild("head").setPos(-13.2793F, 17.8522F, 0.0F);
+		}
+		if (k9.getHealth() < k9.getMaxHealth()) {
+			this.dog.getChild("head").getChild("tongue").visible = true;
+		} else {
+			this.dog.getChild("head").getChild("tongue").visible = false;
+		}
+		this.dog.getChild("body").getChild("collar").visible = k9.isTame();
+		this.dog.getChild("tail").y = 21.5F;
 	}
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		dog.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		poseStack.pushPose();
+		poseStack.scale(0.8F, 0.8F, 0.8F);
+		poseStack.translate(0, -1.6, 0);
+		dog.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+		poseStack.popPose();
 	}
 }

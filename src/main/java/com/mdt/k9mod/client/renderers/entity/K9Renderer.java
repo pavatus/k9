@@ -3,6 +3,8 @@ package com.mdt.k9mod.client.renderers.entity;
 import com.mdt.k9mod.K9Mod;
 import com.mdt.k9mod.client.models.entities.K9Model;
 import com.mdt.k9mod.common.entities.K9Entity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +38,6 @@ public class K9Renderer extends MobRenderer<K9Entity, K9Model<K9Entity>> {
 
         return location;
     }
-
     private boolean needsScarf(K9Entity k9) {
         return (k9.hasCustomName()) && (k9.getCustomName().getString().equals("Tom"));
     }
