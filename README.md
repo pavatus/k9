@@ -24,3 +24,5 @@
 ## [Adventures in Time (TARDIS Mod)](https://legacy.curseforge.com/minecraft/mc-mods/adventures-in-time/files)
 ## [MDTeam's Github](https://github.com/M-D-Team)
 ## [This mods Github](https://github.com/M-D-Team/k9)
+## [Modrinth](https://modrinth.com/mod/k9-mod/)
+## [Curseforge](https://legacy.curseforge.com/minecraft/mc-mods/k9/)
