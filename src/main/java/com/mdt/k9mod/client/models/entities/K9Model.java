@@ -101,8 +101,8 @@ public class K9Model<T extends Entity> extends EntityModel<T> {
 		PartDefinition tail = dog.addOrReplaceChild("tail", CubeListBuilder.create(), PartPose.offset(9.5F, -10.5F, 0.0F));
 
 		PartDefinition cube_r18 = tail.addOrReplaceChild("cube_r18", CubeListBuilder.create().texOffs(34, 37).addBox(14.0F, -4.0F, -0.5F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(15, 39).addBox(17.0F, -3.5F, -0.5F, 8.0F, 0.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 9).addBox(25.0F, -3.5F, -1.0F, 2.0F, 0.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-10.0F, 10.5F, 0.0F, 0.0F, 0.0F, -0.5672F));
+		.texOffs(15, 39).addBox(17.0F, -3.5F, -0.5F, 8.0F, 0.0F, 1.0F, new CubeDeformation(0.001F))
+		.texOffs(0, 9).addBox(25.0F, -3.5F, -1.0F, 2.0F, 0.0F, 2.0F, new CubeDeformation(0.001F)), PartPose.offsetAndRotation(-10.0F, 10.5F, 0.0F, 0.0F, 0.0F, -0.5672F));
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
