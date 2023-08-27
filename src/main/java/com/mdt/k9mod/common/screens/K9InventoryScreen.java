@@ -4,6 +4,7 @@ import com.mdt.k9mod.K9Mod;
 import com.mdt.k9mod.common.container.K9InventoryContainer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -26,12 +27,12 @@ public class K9InventoryScreen extends AbstractContainerScreen<K9InventoryContai
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        super.render(stack, mouseX, mouseY, partialTicks);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(graphics, mouseX, mouseY, partialTicks);
 
-        this.font.draw(stack, this.title, this.leftPos + 8, this.topPos + 7, 0xf5f5f5); // "screen.k9mod.k9_gui" text
-        this.font.draw(stack, this.playerInventoryTitle, this.leftPos + 8, this.topPos + 73, 0xf5f5f5); // "Inventory" text
-        this.font.draw(stack, this.battery + "%", (this.width - font.width(this.battery + "%") + 130) / 2, (this.height - 155) / 2, 0x73e858); // "100%" text
+        graphics.drawString(this.font, this.title, this.leftPos + 8, this.topPos + 7, 0xf5f5f5); // "screen.k9mod.k9_gui" text
+        graphics.drawString(this.font, this.playerInventoryTitle, this.leftPos + 8, this.topPos + 73, 0xf5f5f5); // "Inventory" text
+        graphics.drawString(this.font, this.battery + "%", (this.width - font.width(this.battery + "%") + 130) / 2, (this.height - 155) / 2, 0x73e858); // "100%" text
     }
 
     @Override
@@ -40,15 +41,12 @@ public class K9InventoryScreen extends AbstractContainerScreen<K9InventoryContai
     }
 
     @Override
-    protected void renderBg(PoseStack stack, float mouseX, int mouseY, int partialTicks) {
-        renderBackground(stack);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(stack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+    protected void renderBg(GuiGraphics graphics, float mouseX, int mouseY, int partialTicks) {
+        renderBackground(graphics);
+        graphics.blit(TEXTURE,this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY) {}
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {}
 }
 

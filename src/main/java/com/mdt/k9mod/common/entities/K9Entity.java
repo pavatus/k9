@@ -56,7 +56,7 @@ public class K9Entity extends Wolf {
     }
 
     public static List<ItemEntity> getNearbyItems(K9Entity entity, double radius) {
-        List<ItemEntity> list = entity.level.getEntitiesOfClass(ItemEntity.class, entity.getBoundingBox().inflate(radius));
+        List<ItemEntity> list = entity.level().getEntitiesOfClass(ItemEntity.class, entity.getBoundingBox().inflate(radius));
         return list;
     }
 
@@ -64,9 +64,9 @@ public class K9Entity extends Wolf {
         // check for nearby items and pick them up
         List<ItemEntity> entities = getNearbyItems(this, 1.5);
         for (ItemEntity entity : entities) {
-            if (entity.isOnGround()) {
+            if (entity.onGround()) {
                 // stop if on a hopper
-                if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
+                if (this.level().getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
                     break;
                 }
 
@@ -79,10 +79,10 @@ public class K9Entity extends Wolf {
         if (nearbyItems.size() != 0) {
             for (ItemEntity nearbyItem : nearbyItems) {
                 // stop if on a hopper
-                if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
+                if (this.level().getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
                     break;
                 }
-                if (nearbyItem.isOnGround()) {
+                if (nearbyItem.onGround()) {
                     this.getNavigation().moveTo(nearbyItem.getX(), nearbyItem.getY(), nearbyItem.getZ(), Attributes.MOVEMENT_SPEED.getDefaultValue());
                     break;
                 }
@@ -92,7 +92,7 @@ public class K9Entity extends Wolf {
 
     private void checkForHopperAndDrop() {
         // check if hopper below
-        if (this.level.getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
+        if (this.level().getBlockState(this.getOnPos()).getBlock() instanceof HopperBlock) {
             if (this.hopperItem >= this.inventory.getSlots()) {
                 this.hopperItem = 0;
             }
@@ -102,7 +102,7 @@ public class K9Entity extends Wolf {
             // goes through every item in the inventory and drops it if the countdowns okay
             if (!this.isOnCooldown()) {
 
-                Containers.dropItemStack(this.level, this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getStackInSlot(this.hopperItem));
+                Containers.dropItemStack(this.level(), this.getOnPos().getX(), this.getOnPos().getY() + 1, this.getOnPos().getZ(), this.inventory.getStackInSlot(this.hopperItem));
 
                 this.hopperItem++;
                 this.hopperCountdown = 1*20; // * 20 times by the length in seconds
@@ -142,8 +142,8 @@ public class K9Entity extends Wolf {
 //        }
 //        int dying = 0;
         if(this.isInWater()) {
-            level.addParticle(ParticleTypes.LARGE_SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0.1, 0);
-            level.addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0.05,0);
+            level().addParticle(ParticleTypes.LARGE_SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0.1, 0);
+            level().addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0.05,0);
         }
         super.tick();
     }
@@ -252,7 +252,7 @@ public class K9Entity extends Wolf {
         // Play hurt sound
         if (!this.isNoAi()) {
             hurtCount += damage;
-            level.playSound(null, this.getOnPos(), K9modSounds.K9_HURT.get(), SoundSource.MASTER, 5, 1);
+            level().playSound(null, this.getOnPos(), K9modSounds.K9_HURT.get(), SoundSource.MASTER, 5, 1);
             damage = 0;
         }
 
@@ -261,7 +261,7 @@ public class K9Entity extends Wolf {
         // Disable AI
         // Sit down
         if (hurtCount >= 35) {
-            level.playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundSource.MASTER, 6, 1F);
+            level().playSound(null, this.getOnPos(), K9modSounds.K9_DEATH.get(), SoundSource.MASTER, 6, 1F);
             this.setNoAi(true);
             this.setInSittingPose(false);
         }
@@ -298,14 +298,14 @@ public class K9Entity extends Wolf {
         pPlayer.sendSystemMessage(Component.translatable("K9 is back to full health!")
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(true)));
         k9.hurtCount = 0;
-        level.playSound(null, this.getOnPos(), SoundEvents.ANVIL_HIT, SoundSource.MASTER, 4, 1);
+        level().playSound(null, this.getOnPos(), SoundEvents.ANVIL_HIT, SoundSource.MASTER, 4, 1);
     }
 
     public void restartHeal(Player pPlayer, K9Entity k9) {
         k9.setHealth(20.0F);
         k9.hurtCount = 0;
         k9.setNoAi(false);
-        k9.level.playSound(null, this.getOnPos(), K9modSounds.K9_RESTART.get(), SoundSource.MASTER, 4, 1);
+        k9.level().playSound(null, this.getOnPos(), K9modSounds.K9_RESTART.get(), SoundSource.MASTER, 4, 1);
 
         pPlayer.sendSystemMessage(Component.translatable("K9 is back to full health!")
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(true)));
@@ -326,7 +326,7 @@ public class K9Entity extends Wolf {
 
         final MenuProvider container = new SimpleMenuProvider(K9InventoryContainer.getServerContainer(k9,k9.battery), Component.translatable("screen.k9mod.k9_gui"));
         NetworkHooks.openScreen((ServerPlayer) pPlayer, container);
-        k9.level.playSound(null, k9.getOnPos(), K9modSounds.K9_MASTER.get(), SoundSource.MASTER, 5, 1);
+        k9.level().playSound(null, k9.getOnPos(), K9modSounds.K9_MASTER.get(), SoundSource.MASTER, 5, 1);
     }
 
     @Override
@@ -335,7 +335,7 @@ public class K9Entity extends Wolf {
         Item item = itemstack.getItem();
 
         // I dont even know
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             boolean flag = this.isOwnedBy(pPlayer) || this.isTame() || item == Items.IRON_INGOT && !this.isTame() && !this.isAngry();
             return flag ? InteractionResult.CONSUME : InteractionResult.PASS;
         }
@@ -414,9 +414,9 @@ public class K9Entity extends Wolf {
             // Random 1/3 chance to tame the K9
             if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, pPlayer)) {
                 this.tameAndStop(pPlayer);
-                this.level.broadcastEntityEvent(this, (byte)7);
+                this.level().broadcastEntityEvent(this, (byte)7);
             } else {
-                this.level.broadcastEntityEvent(this, (byte)6);
+                this.level().broadcastEntityEvent(this, (byte)6);
             }
 
             return InteractionResult.SUCCESS;
