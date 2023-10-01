@@ -69,7 +69,7 @@ public class BoneItem extends Item {
                     itemStack.hurtAndBreak(1, player, player1 -> player1.broadcastBreakEvent(context.getHand()));
                 } else {
                     entity.getNavigation().moveTo(pos.getX() - 0.5, pos.getY(), pos.getZ() - 0.5, 1);
-                    world.playSound(null,pos, SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.MASTER,1f,0.4f);
+                    world.playSound(null,pos, SoundEvents.NOTE_BLOCK_BIT, SoundSource.MASTER,1f,0.4f);
                 }
                 return InteractionResult.SUCCESS;
             }

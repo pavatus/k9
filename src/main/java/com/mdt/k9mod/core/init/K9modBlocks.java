@@ -2,7 +2,6 @@ package com.mdt.k9mod.core.init;
 
 import com.mdt.k9mod.K9Mod;
 import com.mdt.k9mod.common.blocks.K9CrateBlock;
-import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -29,6 +28,6 @@ public class K9modBlocks {
     }
 
     private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block) {
-        K9modItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        K9modItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(K9Mod.K9_TAB)));
     }
 }

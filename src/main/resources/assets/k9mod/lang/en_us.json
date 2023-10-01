@@ -4,5 +4,5 @@
   "block.k9mod.k9_crate": "K9 Crate",
   "item.k9mod.k9_wrench": "K9 Wrench",
   "item.k9mod.k9_bone": "Metallic Bone",
-  "tabs.k9mod.k9_tab": "K9"
+  "itemGroup.k9_tab": "K9"
 }
