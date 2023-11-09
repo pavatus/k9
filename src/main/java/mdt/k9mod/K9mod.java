@@ -1,6 +1,7 @@
 package mdt.k9mod;
 
 import io.wispforest.owo.registration.reflect.FieldRegistrationHandler;
+import mdt.k9mod.entity.EntityInit;
 import mdt.k9mod.item.ItemInit;
 import net.fabricmc.api.ModInitializer;
 
@@ -14,5 +15,6 @@ public class K9mod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		FieldRegistrationHandler.register(ItemInit.class, MOD_ID, false);
+		FieldRegistrationHandler.register(EntityInit.class, MOD_ID, false);
 	}
 }
