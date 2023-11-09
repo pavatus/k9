@@ -2,38 +2,41 @@
 	"schemaVersion": 1,
 	"id": "k9mod",
 	"version": "${version}",
-	"name": "K9 Mod",
-	"description": "A small metallic canine companion mod from Doctor Who for your Minecraft world! Part of the MDTeam Collection.\n\nCheck out AIT (Adventures In Time) on Modrinth: https://www.modrinth.com/mod/ait\n\nCheck out our Discord server for more mods by MDTeam!",
+	"name": "k9mod",
+	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Duzo, Loqor"
+		"Me!"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/M-D-Team/k9/tree/1.20.1-fabric"
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/k9mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"mdt.k9.K9Mod"
+			"mdt.k9mod.K9mod"
 		],
 		"client": [
-			"mdt.k9.client.K9ModClient"
+			"mdt.k9mod.K9modClient"
 		],
 		"fabric-datagen": [
-			"mdt.k9.datagen.K9ModDataGenerator"
+			"mdt.k9mod.K9modDataGenerator"
 		]
 	},
 	"mixins": [
-		"k9mod.mixins.json"
+		"k9mod.mixins.json",
+		{
+			"config": "k9mod.client.mixins.json",
+			"environment": "client"
+		}
 	],
 	"depends": {
-		"fabricloader": ">=${loader_version}",
-		"minecraft": "${minecraft_version}",
+		"fabricloader": ">=0.14.24",
+		"minecraft": "~1.20.2",
 		"java": ">=17",
-		"fabric-api": "*",
-		"fabric-key-binding-api-v1": "*"
+		"fabric-api": "*"
 	},
 	"suggests": {
 		"another-mod": "*"

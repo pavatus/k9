@@ -34,4 +34,7 @@ run/
 
 # java
 
-src/main/generated/
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
