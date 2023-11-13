@@ -19,18 +19,14 @@
 			"mdt.k9mod.K9mod"
 		],
 		"client": [
-			"mdt.k9mod.K9modClient"
+			"mdt.k9mod.client.K9modClient"
 		],
 		"fabric-datagen": [
-			"mdt.k9mod.K9modDataGenerator"
+			"mdt.k9mod.datagen.K9ModDataGenerator"
 		]
 	},
 	"mixins": [
-		"k9mod.mixins.json",
-		{
-			"config": "k9mod.client.mixins.json",
-			"environment": "client"
-		}
+		"k9mod.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.24",

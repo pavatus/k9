@@ -1,0 +1,32 @@
+{
+  "k9_defense": {
+    "sounds": [
+      "k9mod:k9_defense"
+    ]
+  },
+  "k9_die": {
+    "sounds": [
+      "k9mod:k9_die"
+    ]
+  },
+  "k9_hurt": {
+    "sounds": [
+      "k9mod:k9_hurt"
+    ]
+  },
+  "k9_master": {
+    "sounds": [
+      "k9mod:k9_master"
+    ]
+  },
+  "k9_restart": {
+    "sounds": [
+      "k9mod:k9_restart"
+    ]
+  },
+  "k9_run": {
+    "sounds": [
+      "k9mod:k9_run"
+    ]
+  }
+}
