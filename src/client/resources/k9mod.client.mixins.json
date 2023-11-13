@@ -1,9 +1,8 @@
 {
 	"required": true,
-	"package": "mdt.k9mod.mixin.client",
+	"package": "mdt.k9mod.mixins.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		""
 	],
 	"injectors": {
 		"defaultRequire": 1
