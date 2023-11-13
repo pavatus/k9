@@ -36,10 +36,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TimeHelper;
+import net.minecraft.util.*;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -48,6 +45,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.EntityView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import networking.PacketInit;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -76,6 +74,23 @@ public class K9Entity extends TameableEntity implements Angerable, IK9Inventory,
         this.setPathfindingPenalty(PathNodeType.POWDER_SNOW, -1.0f);
         this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, -1.0f);
     }
+
+    private final PropertyDelegate properties = new PropertyDelegate() {
+        @Override
+        public int get(int index) {
+            return getBatteryLevel();
+        }
+
+        @Override
+        public void set(int index, int value) {
+            setBattery(value);
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
+    };
 
     @Override
     protected void initGoals() {
@@ -146,7 +161,7 @@ public class K9Entity extends TameableEntity implements Angerable, IK9Inventory,
             }
             return SoundEvents.ENTITY_WOLF_PANT;
         }
-        return SoundsInit.K9_RUN;
+        return SoundEvents.ENTITY_WOLF_AMBIENT;
     }
 
     @Override
@@ -172,23 +187,25 @@ public class K9Entity extends TameableEntity implements Angerable, IK9Inventory,
         }
     }
 
-    private static final int TOTAL_DURATION_SECONDS = 30 * 60;
-
     @Override
     public void tick() {
         super.tick();
         if (!this.isAlive()) {
             return;
         }
-        //if(this.getWorld().isClient) return;
-        //double elapsedSeconds = (System.currentTimeMillis() / 1000.0);
-        //double progress = elapsedSeconds / TOTAL_DURATION_SECONDS;
-        //int decrement = (int) Math.ceil(100 * progress);
 
-        //this.setBattery(this.getBatteryLevel() - decrement);
+        if(this.getWorld().isClient) return;
+        if(this.isTamed()) {
+            double currentBattery = this.getBatteryLevel();
+            int v = (int) Math.ceil(currentBattery - 1);
+            System.out.println(Math.ceil(currentBattery - 1));
+            if (this.getBatteryLevel() <= 100 && this.getBatteryLevel() > 0)
+                this.setBattery(v);
+        }
+    }
 
-        //this.setBattery(Math.max(this.getBatteryLevel(), 0));
-        this.setBattery(56);
+    public double getTimePassed(double work) {
+        return work + 20;
     }
 
     @Override
@@ -283,6 +300,7 @@ public class K9Entity extends TameableEntity implements Angerable, IK9Inventory,
                 this.getWorld().playSound(null, this.getBlockPos(), soundEvent, SoundCategory.NEUTRAL, 7, necessaryPitch);
                 if(!player.getAbilities().creativeMode && this.getHealth() < this.getMaxHealth()) itemStack.setDamage(itemStack.getDamage() + 1);
                 this.heal(this.getMaxHealth());
+                this.setBattery(100);
                 return ActionResult.SUCCESS;
             }
             if(itemStack.isEmpty() && player.isSneaking()) {
@@ -433,9 +451,9 @@ public class K9Entity extends TameableEntity implements Angerable, IK9Inventory,
     @Nullable
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        K9ScreenHandler k9ScreenHandler = new K9ScreenHandler(ScreenHandlerInit.K9_INVENTORY_HANDLER, syncId, playerInventory, this, 3);
-        k9ScreenHandler.setProperty(0, this.getBatteryLevel());
-        return k9ScreenHandler;
+        //K9ScreenHandler k9ScreenHandler = new K9ScreenHandler(ScreenHandlerInit.K9_INVENTORY_HANDLER, syncId, playerInventory, this, 3, properties);
+        //K9mod.K9_NET_CHANNEL.serverHandle(this.getCommandSource().getWorld(), this.getBlockPos()).send(new PacketInit.K9Battery(this.getBatteryLevel(), this, new Identifier(K9mod.MOD_ID, "." + this.getUuid())));
+        return new K9ScreenHandler(ScreenHandlerInit.K9_INVENTORY_HANDLER, syncId, playerInventory, this, properties);
     }
 
     class WolfEscapeDangerGoal

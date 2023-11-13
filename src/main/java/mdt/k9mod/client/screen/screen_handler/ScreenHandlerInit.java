@@ -6,6 +6,6 @@ import net.minecraft.screen.ScreenHandlerType;
 
 public class ScreenHandlerInit implements ScreenHandlerContainer {
 
-    public static final ScreenHandlerType<K9ScreenHandler> K9_INVENTORY_HANDLER = new ScreenHandlerType<>(K9ScreenHandler::create9x3, ScreenHandlerType.GENERIC_9X3.getRequiredFeatures());
+    public static final ScreenHandlerType<K9ScreenHandler> K9_INVENTORY_HANDLER = new ScreenHandlerType<>(K9ScreenHandler::createDefault, ScreenHandlerType.GENERIC_9X3.getRequiredFeatures());
 
 }

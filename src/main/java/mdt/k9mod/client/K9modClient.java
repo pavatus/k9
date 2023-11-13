@@ -9,6 +9,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import networking.PacketInit;
+
+import static mdt.k9mod.K9mod.K9_NET_CHANNEL;
 
 public class K9modClient implements ClientModInitializer {
 	@Override
@@ -17,6 +20,9 @@ public class K9modClient implements ClientModInitializer {
 		entityAttributeRegister();
 		entityRenderRegister();
 		handledScreenRegister();
+		//K9_NET_CHANNEL.registerClientbound(PacketInit.K9Battery.class, (message, access) -> {
+		//	K9_NET_CHANNEL.serverHandle(message.k9Entity().getCommandSource().getWorld(), message.k9Entity().getBlockPos());
+		//});
 	}
 
 	public void entityRenderRegister() {
