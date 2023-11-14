@@ -14,11 +14,11 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class K9EntityRenderer extends MobEntityRenderer<K9Entity, K9EntityModel<K9Entity>> {
     private static final Identifier DEFAULT_TEXTURE = new Identifier(K9mod.MOD_ID, "textures/entity/k9/k9_red.png");
-    //private static final Identifier TAMED_TEXTURE = new Identifier(K9mod.MOD_ID, "textures/entity/k9/k9_red.png");
+    private static final Identifier GLOW_TEXTURE = new Identifier(K9mod.MOD_ID, "textures/entity/k9/k9_emission.png");
 
     public K9EntityRenderer(EntityRendererFactory.Context context) {
         super(context, new K9EntityModel<>(K9EntityModel.getTexturedModelData().createModel()), 0.5F);
-        this.addFeature(new K9GlowFeatureRenderer<>(this));
+        this.addFeature(new K9GlowFeatureRenderer<>(this, GLOW_TEXTURE));
     }
 
     protected float getAnimationProgress(K9Entity K9Entity, float f) {

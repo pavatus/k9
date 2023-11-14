@@ -9,4 +9,6 @@ public class ItemInit implements ItemRegistryContainer {
 
     public static final Item K9_BONE = new Item(new OwoItemSettings().group(ItemGroupInit.K9_GROUP).maxDamage(16));
 
+    public static final Item K9_LITHIUM_CELL = new Item(new OwoItemSettings().group(ItemGroupInit.K9_GROUP));
+
 }

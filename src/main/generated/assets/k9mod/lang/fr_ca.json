@@ -1,6 +1,7 @@
 {
   "block.k9mod.k9_crate": "Le K9 Crate",
   "item.k9mod.k9_bone": "Le Bone",
+  "item.k9mod.k9_lithium_cell": "Le Lithium Cell",
   "item.k9mod.k9_wrench": "Le Wrench",
   "itemGroup.k9mod.k9_group": "Le K9 Mod"
 }

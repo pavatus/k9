@@ -75,6 +75,7 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
         K9ModLanguageProvider k9ModLanguageProvider = new K9ModLanguageProvider(output, languageType);
         k9ModLanguageProvider.addTranslation(ItemInit.K9_WRENCH, "Wrench");
         k9ModLanguageProvider.addTranslation(ItemInit.K9_BONE, "Bone");
+        k9ModLanguageProvider.addTranslation(ItemInit.K9_LITHIUM_CELL, "Lithium Cell");
         k9ModLanguageProvider.addTranslation(ItemGroupInit.K9_GROUP, "K9 Mod");
         k9ModLanguageProvider.addTranslation(BlockInit.K9_CRATE, "K9 Crate");
 
@@ -93,6 +94,7 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
         K9ModLanguageProvider k9ModLanguageProvider = new K9ModLanguageProvider(output, languageType);
         k9ModLanguageProvider.addTranslation(ItemInit.K9_WRENCH, "Le Wrench");
         k9ModLanguageProvider.addTranslation(ItemInit.K9_BONE, "Le Bone");
+        k9ModLanguageProvider.addTranslation(ItemInit.K9_LITHIUM_CELL, "Le Lithium Cell");
         k9ModLanguageProvider.addTranslation(ItemGroupInit.K9_GROUP, "Le K9 Mod");
         k9ModLanguageProvider.addTranslation(BlockInit.K9_CRATE, "Le K9 Crate");
 
@@ -111,6 +113,7 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
         K9ModLanguageProvider k9ModLanguageProvider = new K9ModLanguageProvider(output, languageType);
         k9ModLanguageProvider.addTranslation(ItemInit.K9_WRENCH, "Wrenche");
         k9ModLanguageProvider.addTranslation(ItemInit.K9_BONE, "Boene");
+        k9ModLanguageProvider.addTranslation(ItemInit.K9_LITHIUM_CELL, "Power Celle");
         k9ModLanguageProvider.addTranslation(ItemGroupInit.K9_GROUP, "K9 Moede");
         k9ModLanguageProvider.addTranslation(BlockInit.K9_CRATE, "K9 Boxe");
 
