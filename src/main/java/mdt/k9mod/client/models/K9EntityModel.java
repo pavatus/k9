@@ -9,6 +9,8 @@ import net.minecraft.client.render.entity.model.EntityModelPartNames;
 import net.minecraft.client.render.entity.model.TintableAnimalModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
+import org.joml.Vector3f;
 
 // Made with Blockbench 4.8.3
 // Exported for Minecraft version 1.17+ for Yarn
@@ -144,7 +146,7 @@ public class K9EntityModel<T extends K9Entity> extends TintableAnimalModel<T> {
 			this.body.pitch = ((float) Math.PI * 180F);
 			this.head.setPivot(-13.2793F, 17.8522F, 0.0F);
 		}
-		if (k9Entity.getHealth() < k9Entity.getMaxHealth()) {
+		if (k9Entity.getHealth() < 10.0F) {
 			this.tongue.visible = true;
 		} else {
 			this.tongue.visible = false;

@@ -1,5 +1,6 @@
 package mdt.k9mod.client;
 
+import mdt.k9mod.client.screen.K9CellScreen;
 import mdt.k9mod.entity.EntityInit;
 import mdt.k9mod.entity.K9Entity;
 import mdt.k9mod.client.renderers.K9EntityRenderer;
@@ -35,5 +36,6 @@ public class K9modClient implements ClientModInitializer {
 
 	public void handledScreenRegister() {
 		HandledScreens.register(ScreenHandlerInit.K9_INVENTORY_HANDLER, K9InventoryScreen::new);
+		HandledScreens.register(ScreenHandlerInit.K9_CELL_HANDLER, K9CellScreen::new);
 	}
 }

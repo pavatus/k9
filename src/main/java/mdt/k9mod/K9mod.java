@@ -26,10 +26,6 @@ public class K9mod implements ModInitializer {
 
     public static final OwoNetChannel K9_NET_CHANNEL = OwoNetChannel.create(new Identifier(MOD_ID, "main"));
 
-	static {
-		ScreenHandlerType<ScreenHandler> K9_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID + ".k9screenhandler"),K9ScreenHandler::createDefault);
-	}
-
 	@Override
 	public void onInitialize() {
 		FieldRegistrationHandler.register(ItemInit.class, MOD_ID, false);

@@ -9,7 +9,9 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.RotationAxis;
 
 @Environment(EnvType.CLIENT)
 public class K9EntityRenderer extends MobEntityRenderer<K9Entity, K9EntityModel<K9Entity>> {
@@ -25,6 +27,7 @@ public class K9EntityRenderer extends MobEntityRenderer<K9Entity, K9EntityModel<
         return K9Entity.getTailAngle();
     }
 
+    @Override
     public void render(K9Entity k9Entity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
         super.render(k9Entity, f, g, matrixStack, vertexConsumerProvider, i);
     }

@@ -1,6 +1,6 @@
 package mdt.k9mod.client.screen.screen_handler;
 
-import com.google.common.base.Suppliers;
+import mdt.k9mod.item.ItemInit;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -10,20 +10,20 @@ import net.minecraft.screen.*;
 import net.minecraft.screen.slot.ShulkerBoxSlot;
 import net.minecraft.screen.slot.Slot;
 
-public class K9ScreenHandler extends ScreenHandler {
-    
+public class K9CellScreenHandler extends ScreenHandler {
+
     private final Inventory inventory;
     private final PropertyDelegate propertyDelegate;
 
-    public K9ScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory) {
+    public K9CellScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory) {
         this(type, syncId, playerInventory, new SimpleInventory(27), new ArrayPropertyDelegate(1));
     }
 
-    public static K9ScreenHandler createDefault(int syncId, PlayerInventory playerInventory) {
-        return new K9ScreenHandler(ScreenHandlerInit.K9_INVENTORY_HANDLER, syncId, playerInventory);
+    public static K9CellScreenHandler createDefault(int syncId, PlayerInventory playerInventory) {
+        return new K9CellScreenHandler(ScreenHandlerInit.K9_CELL_HANDLER, syncId, playerInventory);
     }
 
-    public K9ScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, PropertyDelegate propertyDelegate) {
+    public K9CellScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, Inventory inventory, PropertyDelegate propertyDelegate) {
         super(type, syncId);
         int l;
         int k;
@@ -32,19 +32,17 @@ public class K9ScreenHandler extends ScreenHandler {
         this.propertyDelegate = propertyDelegate;
         this.addProperties(propertyDelegate);
         inventory.onOpen(playerInventory.player);
-        int i = 3;
-        int j = 9;
-        for (k = 0; k < i; ++k) {
-            for (l = 0; l < j; ++l) {
-                this.addSlot(new ShulkerBoxSlot(inventory, l + k * j, 8 + l * 18, 18 + k * 18));
+        for (k = 0; k < 2; ++k) {
+            for (l = 0; l < 4; ++l) {
+                this.addSlot(new ShulkerBoxSlot(inventory, l + k * 4, 26 + l * 36, 24 + k * 23));
             }
         }
-        for (k = 0; k < i; ++k) {
-            for (l = 0; l < j; ++l) {
-                this.addSlot(new Slot(playerInventory, l + k * j + j, 8 + l * 18, 84 + k * 18));
+        for (k = 0; k < 3; ++k) {
+            for (l = 0; l < 9; ++l) {
+                this.addSlot(new Slot(playerInventory, l + k * 9 + 9, 8 + l * 18, 84 + k * 18));
             }
         }
-        for (k = 0; k < j; ++k) {
+        for (k = 0; k < 9; ++k) {
             this.addSlot(new Slot(playerInventory, k, 8 + k * 18, 142));
         }
     }
@@ -61,8 +59,9 @@ public class K9ScreenHandler extends ScreenHandler {
         Slot slot2 = (Slot)this.slots.get(slot);
         if (slot2 != null && slot2.hasStack()) {
             ItemStack itemStack2 = slot2.getStack();
+            if(itemStack2.getItem() != ItemInit.K9_LITHIUM_CELL) return itemStack;
             itemStack = itemStack2.copy();
-            if (slot < 27 ? !this.insertItem(itemStack2, 27, this.slots.size(), true) : !this.insertItem(itemStack2, 0, 27, false)) {
+            if (slot < 8 ? !this.insertItem(itemStack2, 27, this.slots.size(), true) : !this.insertItem(itemStack2, 0, 27, false)) {
                 return ItemStack.EMPTY;
             }
             if (itemStack2.isEmpty()) {
@@ -72,6 +71,13 @@ public class K9ScreenHandler extends ScreenHandler {
             }
         }
         return itemStack;
+    }
+
+    @Override
+    public boolean canInsertIntoSlot(ItemStack stack, Slot slot) {
+        if(stack.getItem() == ItemInit.K9_LITHIUM_CELL) {
+            return super.canInsertIntoSlot(stack, slot);
+        } else return super.canInsertIntoSlot(ItemStack.EMPTY, slot);
     }
 
     @Override

@@ -28,7 +28,8 @@ public class K9CrateBlock extends Block {
     }
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.isClient) {
+        ItemStack mainHandStack = player.getMainHandStack();
+        if (world.isClient && mainHandStack.isEmpty()) {
             world.addParticle(ParticleTypes.TOTEM_OF_UNDYING, pos.getX() + Random.create().nextBetween(1, 2), pos.getY() + Random.create().nextBetween(1, 5), pos.getZ() + Random.create().nextBetween(1, 2), 0, 1, 0);
             world.addParticle(ParticleTypes.TOTEM_OF_UNDYING, pos.getX() + Random.create().nextBetween(1, 2), pos.getY() + Random.create().nextBetween(1, 5), pos.getZ() + Random.create().nextBetween(1, 2), 0, 1, 0);
             world.addParticle(ParticleTypes.TOTEM_OF_UNDYING, pos.getX() + Random.create().nextBetween(1, 2), pos.getY() + Random.create().nextBetween(1, 5), pos.getZ() + Random.create().nextBetween(1, 2), 0, 1, 0);
@@ -36,15 +37,10 @@ public class K9CrateBlock extends Block {
             world.addParticle(ParticleTypes.TOTEM_OF_UNDYING, pos.getX() + Random.create().nextBetween(1, 2), pos.getY() + Random.create().nextBetween(1, 5), pos.getZ() + Random.create().nextBetween(1, 2), 0, 1, 0);
             return ActionResult.SUCCESS;
         }
-        ItemStack mainHandStack = player.getMainHandStack();
         if (mainHandStack.isEmpty()) {
-            //K9Entity k9 = new K9Entity(EntityInit.K9_ENTITY_TYPE, world);
-            UUID uUID;
             K9Entity k9Entity = EntityInit.K9_ENTITY_TYPE.create(world);
-            if (k9Entity != null && (uUID = player.getUuid()) != null) {
-                k9Entity.setOwnerUuid(uUID);
-                k9Entity.setTamed(true);
-            k9Entity.setPos(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+            if (k9Entity != null) {
+            k9Entity.setPos(pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
             world.spawnEntity(k9Entity);
             world.playSound(null, new BlockPos(pos.getX(), pos.getY(), pos.getZ()), SoundEvents.ITEM_TOTEM_USE, SoundCategory.BLOCKS, 7, 1);
             world.setBlockState(pos, Blocks.AIR.getDefaultState());

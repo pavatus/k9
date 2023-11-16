@@ -1,17 +1,20 @@
 package mdt.k9mod.client.screen;
 
 import mdt.k9mod.K9mod;
+import mdt.k9mod.client.screen.screen_handler.K9CellScreenHandler;
 import mdt.k9mod.client.screen.screen_handler.K9ScreenHandler;
+import mdt.k9mod.item.ItemInit;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.AirBlockItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class K9InventoryScreen extends HandledScreen<K9ScreenHandler> {
-    private static final Identifier TEXTURE = new Identifier(K9mod.MOD_ID, "textures/gui/container/k9_inventory.png");
+public class K9CellScreen extends HandledScreen<K9CellScreenHandler> {
+    private static final Identifier TEXTURE = new Identifier(K9mod.MOD_ID, "textures/gui/container/k9_cell_screen.png");
 
-    public K9InventoryScreen(K9ScreenHandler handler, PlayerInventory inventory, Text title) {
+    public K9CellScreen(K9CellScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
     }
 
@@ -30,6 +33,12 @@ public class K9InventoryScreen extends HandledScreen<K9ScreenHandler> {
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         String batteryLevel = this.getScreenHandler().getBattery() + "%";
+        for (int i = 0; i < 8; i++) {
+            if(!this.handler.getSlot(i).getStack().isEmpty()) {
+                int j = this.handler.getSlot(i).getStack().getItem() == ItemInit.K9_LITHIUM_CELL ? 19 : 0;
+                context.drawTexture(TEXTURE, this.handler.getSlot(i).x - 1, this.handler.getSlot(i).y + 16, j, 167, 18, 6);
+            }
+        }
         context.drawCenteredTextWithShadow(this.textRenderer, Text.of(batteryLevel), (this.backgroundWidth - this.textRenderer.getWidth(batteryLevel) + 150) / 2, (this.backgroundHeight - 153) / 2, 0x00ff00);
     }
 
