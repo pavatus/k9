@@ -207,7 +207,8 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         if (!this.getWorld().isClient) {
             int amountOfCells = 0;
             int additiveValue = 0;
-            for(int i = 27; i < 34; i++) {
+            int d = 0;
+            for(int i = 27; i < 35; i++) {
                 if (this.getItems().get(i).getItem() instanceof K9LithiumCellItem) {
                     NbtCompound nbt = this.getItems().get(i).getNbt();
                     if (nbt != null) {
@@ -216,30 +217,32 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
                         }
                         additiveValue = additiveValue + nbt.getInt(BATTERY_KEY);
                     }
-                } else if(amountOfCells == 0) {
+                } /*else if(amountOfCells == 0) {
                     this.setBattery(0);
-                }
-                this.setBattery(additiveValue + (amountOfCells * 2 + 4));
+                }*/
+                if(amountOfCells != 0) d = 4;
+                this.setBattery(additiveValue + (amountOfCells * 2 + d));
             }
             this.setAiDisabled(this.getBatteryLevel() <= 0);
             this.tickAngerLogic((ServerWorld)this.getWorld(), true);
-            //if(!this.isSitting()) {
+            if(!this.isSitting()) {
                 if (this.random.nextInt(199) == 0) { // 1 in 200 chance of detracting battery percentage
                     if (this.getBatteryLevel() > 0) {
-                        for(int i = 34; i > 27; i--) {
+                        int minNotDeadIndex = 26;
+
+                        for (int i = 34; i > minNotDeadIndex; i--) {
                             if (this.getItems().get(i).getItem() instanceof K9LithiumCellItem) {
                                 NbtCompound nbt = this.getItems().get(i).getNbt();
-                                if (nbt != null) {
+                                if (nbt != null && nbt.getInt(BATTERY_KEY) > 0) {
+                                    // Process the cell
                                     nbt.putInt(BATTERY_KEY, Math.max(nbt.getInt(BATTERY_KEY) - 1, 0));
-                                    if (nbt.getInt(BATTERY_KEY) <= 0)
-                                        break;
+                                    break; // Break the loop after processing one cell
                                 }
-                                break;
                             }
                         }
                     }
                 }
-            //}
+            }
         }
     }
 

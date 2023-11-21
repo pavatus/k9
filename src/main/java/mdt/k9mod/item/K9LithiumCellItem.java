@@ -1,7 +1,12 @@
 package mdt.k9mod.item;
 
 import com.google.common.collect.Lists;
+import com.sun.jna.platform.KeyboardUtils;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.block.RedstoneBlock;
+import net.minecraft.client.Keyboard;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
@@ -20,6 +25,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +55,7 @@ public class K9LithiumCellItem extends Item {
 
         if(context.getWorld().getBlockState(context.getBlockPos()).getBlock() instanceof RedstoneBlock) {
             if (nbt.contains(BATTERY_KEY)) {
-                nbt.putInt(BATTERY_KEY, Math.max(nbt.getInt(BATTERY_KEY) + 1, 10));
+                nbt.putInt(BATTERY_KEY, Math.min(nbt.getInt(BATTERY_KEY) + 1, 10));
             } else {
                 nbt.putInt(BATTERY_KEY, 10);
             }
@@ -126,7 +132,10 @@ public class K9LithiumCellItem extends Item {
 
             MutableText textifiedBlockAmount = remainingBlocks > 0 ? Text.literal(tooltipString.toString()) : Text.literal("░░░░░░░░░░░");
             tooltip.add(1, textifiedBlockAmount.formatted(remainingBlocks > 0 ? Formatting.AQUA : Formatting.RED));
-            tooltip.add(2, remainingBlocks > 0 ? Text.translatable(BATTERY_KEY + " Level: " + remainingBlocks + "0%").formatted(Formatting.GREEN) : Text.translatable("Battery Depleted!").formatted(Formatting.GOLD));
+            /*assert MinecraftClient.getInstance().currentScreen != null;
+            if (MinecraftClient.getInstance().currentScreen.keyPressed(GLFW.GLFW_KEY_LEFT_SHIFT, GLFW.glfwGetKeyScancode(GLFW.GLFW_KEY_LEFT_SHIFT), 0))*/
+            if (MinecraftClient.getInstance().options.advancedItemTooltips)
+                tooltip.add(2, remainingBlocks > 0 ? Text.translatable(BATTERY_KEY + " Level: " + remainingBlocks + "0%").formatted(Formatting.GREEN) : Text.translatable("Battery Depleted!").formatted(Formatting.GOLD));
         }
     }
 
