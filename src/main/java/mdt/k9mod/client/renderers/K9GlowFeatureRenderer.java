@@ -5,12 +5,14 @@ import mdt.k9mod.entity.K9Entity;
 import mdt.k9mod.client.models.K9EntityModel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.EyesFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+
+import java.awt.*;
 
 @Environment(EnvType.CLIENT)
 public class K9GlowFeatureRenderer<T extends K9Entity, M extends K9EntityModel<T>> extends EyesFeatureRenderer<T, M> {
@@ -23,7 +25,9 @@ public class K9GlowFeatureRenderer<T extends K9Entity, M extends K9EntityModel<T
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-        if(!entity.isAiDisabled()) super.render(matrices, vertexConsumers, light, entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
+        if(!entity.isAiDisabled()) {
+            super.render(matrices, vertexConsumers, light, entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
+        }
     }
 
     @Override

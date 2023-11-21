@@ -8,6 +8,7 @@ import mdt.k9mod.item.ItemInit;
 import mdt.k9mod.item.K9LithiumCellItem;
 import mdt.k9mod.sounds.SoundsInit;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.entity.*;
@@ -71,8 +72,11 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     private static final TrackedData<Integer> COLLAR_COLOR = DataTracker.registerData(K9Entity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Integer> BATTERY_LEVEL = DataTracker.registerData(K9Entity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Integer> ANGER_TIME = DataTracker.registerData(K9Entity.class, TrackedDataHandlerRegistry.INTEGER);
-    private int hopperCountdown,hopperItem = 0;
     private int numeral = 0;
+
+    private boolean songPlaying;
+    @Nullable
+    private BlockPos songSource;
 
     public static final Predicate<LivingEntity> FOLLOW_TAMED_PREDICATE = entity -> {
         EntityType<?> entityType = entity.getType();
@@ -106,10 +110,6 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         }
     };
 
-    private boolean isOnCooldown() {
-        return this.hopperCountdown > 0;
-    }
-
     @Override
     protected void initGoals() {
         this.goalSelector.add(1, new SwimGoal(this));
@@ -119,6 +119,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         this.goalSelector.add(4, new PounceAtTargetGoal(this, 0.4f));
         this.goalSelector.add(5, new MeleeAttackGoal(this, 1.0, true));
         this.goalSelector.add(5, new FollowOwnerGoal(this, 1.0, 10.0f, 2.0f, false));
+        this.goalSelector.add(8, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 8.0f));
         this.targetSelector.add(1, new TrackOwnerAttackerGoal(this));
         this.targetSelector.add(2, new AttackWithOwnerGoal(this));
@@ -138,6 +139,16 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         this.dataTracker.startTracking(COLLAR_COLOR, DyeColor.RED.getId());
         this.dataTracker.startTracking(BATTERY_LEVEL, 100);
         this.dataTracker.startTracking(ANGER_TIME, 0);
+    }
+
+    @Override
+    public void setNearbySongPlaying(BlockPos songPosition, boolean playing) {
+        this.songSource = songPosition;
+        this.songPlaying = playing;
+    }
+
+    public boolean isSongPlaying() {
+        return this.songPlaying;
     }
 
     @Override
@@ -204,6 +215,10 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     @Override
     public void tickMovement() {
         super.tickMovement();
+        if (this.songSource == null || !this.songSource.isWithinDistance(this.getPos(), 3.46) || !this.getWorld().getBlockState(this.songSource).isOf(Blocks.JUKEBOX)) {
+            this.songPlaying = false;
+            this.songSource = null;
+        }
         if (!this.getWorld().isClient) {
             int amountOfCells = 0;
             int additiveValue = 0;
@@ -251,6 +266,12 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     }
 
     @Override
+    public boolean canTransferTo(Inventory hopperInventory, int slot, ItemStack stack) {
+        if(slot >= 27 && stack.getItem() == ItemInit.K9_LITHIUM_CELL) return false;
+        else return true;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (!this.isAlive()) {
@@ -260,28 +281,15 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         this.setAiDisabled(this.isTamed() && (this.getHealth() <= 10.0f || this.getBatteryLevel() <= 0));
 
         if (!this.getWorld().isClient) {
-            if (this.getItems().get(34).getItem() instanceof K9LithiumCellItem item) {
-                //item.setBattery(new ItemStack(item), 5);
-            }
-            // check if hopper below
-            BlockPos bpos = new BlockPos(this.getBlockPos().getX(), this.getBlockPos().getY() - 1, this.getBlockPos().getZ());
             Inventory inventory = this;
-            if (this.getWorld().getBlockState(bpos).getBlock() != null) {
-                // goes through every item in the inventory and drops it if the countdowns okay
-                if (!isOnCooldown()) {
-                    if (this.getWorld().getBlockEntity(bpos) instanceof HopperBlockEntity hopperBlockEntity && this.isSitting()) {
-                        //this.getNavigation().startMovingTo(hopperBlockEntity.getPos().getX(), hopperBlockEntity.getPos().getY(), hopperBlockEntity.getPos().getZ(), EntityAttributes.GENERIC_MOVEMENT_SPEED.getDefaultValue());
-                        if (this.hopperItem >= inventory.size()) {
-                            this.hopperItem = 0;
-                        }
-                        this.dropStack(inventory.getStack(this.hopperItem), 2);
-                        this.hopperItem++;
-                        this.hopperCountdown = 20; // * 20 times by the length in seconds
+            BlockPos bpos = new BlockPos(this.getBlockPos().getX(), this.getBlockPos().getY() - 1, this.getBlockPos().getZ());
+            // check if hopper below
+            if (this.getWorld().getBlockEntity(bpos) instanceof HopperBlockEntity && this.isSitting()) {
+                for(int i = 0; i < this.getItems().size(); i++) {
+                    if (this.canTransferTo(HopperBlockEntity.getInventoryAt(this.getWorld(), bpos), i, this.getItems().get(i))) {
                     }
-                    this.hopperCountdown--;
                 }
             }
-
             // check for nearby items and pick them up
             List<ItemEntity> entities = getNearbyItems(this, 1.5D);
             for (ItemEntity entity : entities) {
@@ -326,7 +334,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
                     if (this.getWorld().getBlockState(bpos).getBlock() instanceof HopperBlock) {
                         break;
                     }
-                    if (nearbyItem.isOnGround()) {
+                    if (nearbyItem.isOnGround() && !this.isSitting()) {
                         this.getNavigation().startMovingTo(nearbyItems.get(0).getX(), nearbyItems.get(0).getY(), nearbyItems.get(0).getZ(), EntityAttributes.GENERIC_MOVEMENT_SPEED.getDefaultValue());
                         break;
                     }

@@ -156,6 +156,11 @@ public class K9EntityModel<T extends K9Entity> extends TintableAnimalModel<T> {
 		} else {
 			this.collar.visible = true;
 		}
+		if(k9Entity.isSongPlaying()) {
+			this.dog.yaw = this.dog.yaw + MathHelper.sin(f * 0.6662F) * 0.2F;
+		} else {
+			this.dog.yaw = this.dog.getDefaultTransform().yaw;
+		}
 	}
 
 	@Override
