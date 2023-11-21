@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
@@ -104,7 +105,7 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
                     .pattern("OCO")
                     .pattern("IAI")
                     .input('I', Items.IRON_INGOT)
-                    .input('O', Items.OBSIDIAN)
+                    .input('O', Items.OBSIDIAN) // Maybe make it granite since pegmatites are more similar to granite
                     .input('A', Items.COAL)
                     .input('C', Items.COPPER_INGOT)
                     .criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
