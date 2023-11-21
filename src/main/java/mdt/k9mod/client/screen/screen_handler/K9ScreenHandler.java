@@ -16,7 +16,7 @@ public class K9ScreenHandler extends ScreenHandler {
     private final PropertyDelegate propertyDelegate;
 
     public K9ScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory) {
-        this(type, syncId, playerInventory, new SimpleInventory(27), new ArrayPropertyDelegate(1));
+        this(type, syncId, playerInventory, new SimpleInventory(35), new ArrayPropertyDelegate(1));
     }
 
     public static K9ScreenHandler createDefault(int syncId, PlayerInventory playerInventory) {
@@ -27,7 +27,7 @@ public class K9ScreenHandler extends ScreenHandler {
         super(type, syncId);
         int l;
         int k;
-        GenericContainerScreenHandler.checkSize(inventory, 27);
+        GenericContainerScreenHandler.checkSize(inventory, 35);
         this.inventory = inventory;
         this.propertyDelegate = propertyDelegate;
         this.addProperties(propertyDelegate);

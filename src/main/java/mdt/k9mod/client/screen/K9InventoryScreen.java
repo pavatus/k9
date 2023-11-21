@@ -20,6 +20,7 @@ public class K9InventoryScreen extends HandledScreen<K9ScreenHandler> {
         super.init();
         // Center the title
         titleX = (backgroundWidth - textRenderer.getWidth("K9")) / 2;
+        //System.out.println(this.handler.getSlot(0).getStack());
     }
 
     @Override

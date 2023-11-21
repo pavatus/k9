@@ -1,11 +1,11 @@
 package mdt.k9mod.entity;
 
 import io.wispforest.owo.util.ImplementedInventory;
-import mdt.k9mod.client.inventory.IK9Inventory;
 import mdt.k9mod.client.screen.screen_handler.K9CellScreenHandler;
 import mdt.k9mod.client.screen.screen_handler.K9ScreenHandler;
 import mdt.k9mod.client.screen.screen_handler.ScreenHandlerInit;
 import mdt.k9mod.item.ItemInit;
+import mdt.k9mod.item.K9LithiumCellItem;
 import mdt.k9mod.sounds.SoundsInit;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HopperBlock;
@@ -20,20 +20,21 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.*;
-import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.PassiveEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.tag.BlockTags;
@@ -62,9 +63,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import static mdt.k9mod.item.K9LithiumCellItem.BATTERY_KEY;
+
 public class K9Entity extends TameableEntity implements Angerable, NamedScreenHandlerFactory, ImplementedInventory {
 
-    private final DefaultedList<ItemStack> items = DefaultedList.ofSize(27, ItemStack.EMPTY);
+    private final DefaultedList<ItemStack> items = DefaultedList.ofSize(35, ItemStack.EMPTY);
     private static final TrackedData<Integer> COLLAR_COLOR = DataTracker.registerData(K9Entity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Integer> BATTERY_LEVEL = DataTracker.registerData(K9Entity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Integer> ANGER_TIME = DataTracker.registerData(K9Entity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -75,8 +78,6 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         EntityType<?> entityType = entity.getType();
         return entityType == EntityType.SHEEP || entityType == EntityType.RABBIT || entityType == EntityType.FOX;
     };
-    private static final float WILD_MAX_HEALTH = 8.0f;
-    private static final float TAMED_MAX_HEALTH = 40.0f;
     private static final UniformIntProvider ANGER_TIME_RANGE = TimeHelper.betweenSeconds(20, 39);
     @Nullable
     private UUID angryAt;
@@ -118,9 +119,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         this.goalSelector.add(4, new PounceAtTargetGoal(this, 0.4f));
         this.goalSelector.add(5, new MeleeAttackGoal(this, 1.0, true));
         this.goalSelector.add(5, new FollowOwnerGoal(this, 1.0, 10.0f, 2.0f, false));
-        //this.goalSelector.add(8, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 8.0f));
-        //this.goalSelector.add(10, new LookAroundGoal(this));
         this.targetSelector.add(1, new TrackOwnerAttackerGoal(this));
         this.targetSelector.add(2, new AttackWithOwnerGoal(this));
         this.targetSelector.add(3, new RevengeGoal(this, new Class[0]).setGroupRevenge(new Class[0]));
@@ -206,16 +205,41 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     public void tickMovement() {
         super.tickMovement();
         if (!this.getWorld().isClient) {
-            if(this.getBatteryLevel() <= 0) {
-                this.setAiDisabled(true);
-            } else {
-                this.setAiDisabled(false);
+            int amountOfCells = 0;
+            int additiveValue = 0;
+            for(int i = 27; i < 34; i++) {
+                if (this.getItems().get(i).getItem() instanceof K9LithiumCellItem) {
+                    NbtCompound nbt = this.getItems().get(i).getNbt();
+                    if (nbt != null) {
+                        if(nbt.getInt(BATTERY_KEY) > 0) {
+                            amountOfCells += 1;
+                        }
+                        additiveValue = additiveValue + nbt.getInt(BATTERY_KEY);
+                    }
+                } else if(amountOfCells == 0) {
+                    this.setBattery(0);
+                }
+                this.setBattery(additiveValue + (amountOfCells * 2 + 4));
             }
+            this.setAiDisabled(this.getBatteryLevel() <= 0);
             this.tickAngerLogic((ServerWorld)this.getWorld(), true);
-            if(!this.isSitting())
-                if(this.random.nextInt(199) == 0) // 1 in 200 chance of detracting battery percentage
-                    if(this.getBatteryLevel() > 0)
-                        this.setBattery(this.getBatteryLevel() - 1);
+            //if(!this.isSitting()) {
+                if (this.random.nextInt(199) == 0) { // 1 in 200 chance of detracting battery percentage
+                    if (this.getBatteryLevel() > 0) {
+                        for(int i = 34; i > 27; i--) {
+                            if (this.getItems().get(i).getItem() instanceof K9LithiumCellItem) {
+                                NbtCompound nbt = this.getItems().get(i).getNbt();
+                                if (nbt != null) {
+                                    nbt.putInt(BATTERY_KEY, Math.max(nbt.getInt(BATTERY_KEY) - 1, 0));
+                                    if (nbt.getInt(BATTERY_KEY) <= 0)
+                                        break;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            //}
         }
     }
 
@@ -233,6 +257,9 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         this.setAiDisabled(this.isTamed() && (this.getHealth() <= 10.0f || this.getBatteryLevel() <= 0));
 
         if (!this.getWorld().isClient) {
+            if (this.getItems().get(34).getItem() instanceof K9LithiumCellItem item) {
+                //item.setBattery(new ItemStack(item), 5);
+            }
             // check if hopper below
             BlockPos bpos = new BlockPos(this.getBlockPos().getX(), this.getBlockPos().getY() - 1, this.getBlockPos().getZ());
             Inventory inventory = this;
@@ -260,7 +287,9 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
                     if (this.getWorld().getBlockState(bpos).getBlock() instanceof HopperBlock) {
                         break;
                     }
-                    for (int i = 0; i < inventory.size(); i++) {
+                    int getInvSize = entity.getStack().getItem() != ItemInit.K9_LITHIUM_CELL ? 27 : 35;
+                    int getISize = entity.getStack().getItem() != ItemInit.K9_LITHIUM_CELL ? 27 : 8;
+                    for (int i = getInvSize - getISize; i < getInvSize; i++) {
                         ItemStack currentStack = inventory.getStack(i);
                         ItemStack entityStack = entity.getStack();
 
@@ -284,14 +313,6 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
                             }
                         }
                     }
-
-                    //for(int i = 0; i < this.getItems().size(); i++) {
-                    //    if(this.getItems().get(i).isEmpty() || this.areItemsEqual(this.getItems().get(i), entity.getStack().copy())) {
-                    //        this.items.add(i, entity.getStack().copy());
-                    //        entity.kill();
-                    //    }
-                    //}
-                    //System.out.println(this.items.size());
                 }
             }
             // move towards the first item in the list thats on the ground
@@ -414,10 +435,6 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(5.0);
     }
 
-    /*
-     * Enabled force condition propagation
-     * Lifted jumps to return sites
-     */
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
@@ -426,14 +443,14 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
             boolean bl = this.isOwner(player) || this.isTamed() || itemStack.isOf(ItemInit.K9_BONE) && !this.isTamed() && !this.hasAngerTime();
             return bl ? ActionResult.CONSUME : ActionResult.PASS;
         }
+
         if (this.isTamed()) {
             ActionResult actionResult;
-            if (itemStack == ItemInit.K9_LITHIUM_CELL.getDefaultStack() && (this.getHealth() < this.getMaxHealth() || this.getBatteryLevel() < 100)) {
+            if (itemStack.getItem() == Items.REDSTONE && this.getHealth() < this.getMaxHealth()) {
                 if (!player.getAbilities().creativeMode) {
                     itemStack.decrement(1);
                 }
                 this.heal(1);
-                this.setBattery(this.getBatteryLevel() + 1);
                 return ActionResult.SUCCESS;
             }
             if (item instanceof DyeItem dyeItem) {
@@ -458,7 +475,6 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
                     if (!player.getAbilities().creativeMode && this.getHealth() < this.getMaxHealth())
                         itemStack.setDamage(itemStack.getDamage() + 1);
                     this.heal(this.getMaxHealth());
-                    this.setBattery(100);
                     return ActionResult.SUCCESS;
                 } else {
                     NamedScreenHandlerFactory sHF = new SimpleNamedScreenHandlerFactory(
@@ -622,8 +638,6 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     @Nullable
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        //K9ScreenHandler k9ScreenHandler = new K9ScreenHandler(ScreenHandlerInit.K9_INVENTORY_HANDLER, syncId, playerInventory, this, 3, properties);
-        //K9mod.K9_NET_CHANNEL.serverHandle(this.getCommandSource().getWorld(), this.getBlockPos()).send(new PacketInit.K9Battery(this.getBatteryLevel(), this, new Identifier(K9mod.MOD_ID, "." + this.getUuid())));
         return new K9ScreenHandler(ScreenHandlerInit.K9_INVENTORY_HANDLER, syncId, playerInventory, this, properties);
     }
 

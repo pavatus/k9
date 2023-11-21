@@ -16,7 +16,7 @@ public class K9CellScreenHandler extends ScreenHandler {
     private final PropertyDelegate propertyDelegate;
 
     public K9CellScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory) {
-        this(type, syncId, playerInventory, new SimpleInventory(27), new ArrayPropertyDelegate(1));
+        this(type, syncId, playerInventory, new SimpleInventory(35), new ArrayPropertyDelegate(1));
     }
 
     public static K9CellScreenHandler createDefault(int syncId, PlayerInventory playerInventory) {
@@ -27,14 +27,14 @@ public class K9CellScreenHandler extends ScreenHandler {
         super(type, syncId);
         int l;
         int k;
-        GenericContainerScreenHandler.checkSize(inventory, 27);
+        GenericContainerScreenHandler.checkSize(inventory, 35);
         this.inventory = inventory;
         this.propertyDelegate = propertyDelegate;
         this.addProperties(propertyDelegate);
         inventory.onOpen(playerInventory.player);
         for (k = 0; k < 2; ++k) {
             for (l = 0; l < 4; ++l) {
-                this.addSlot(new ShulkerBoxSlot(inventory, l + k * 4, 26 + l * 36, 24 + k * 23));
+                this.addSlot(new ShulkerBoxSlot(inventory, (l + k * 4) + 27, 26 + l * 36, 24 + k * 23));
             }
         }
         for (k = 0; k < 3; ++k) {
@@ -61,7 +61,7 @@ public class K9CellScreenHandler extends ScreenHandler {
             ItemStack itemStack2 = slot2.getStack();
             if(itemStack2.getItem() != ItemInit.K9_LITHIUM_CELL) return itemStack;
             itemStack = itemStack2.copy();
-            if (slot < 8 ? !this.insertItem(itemStack2, 27, this.slots.size(), true) : !this.insertItem(itemStack2, 0, 27, false)) {
+            if (slot < 8 ? !this.insertItem(itemStack2, 8, this.slots.size(), true) : !this.insertItem(itemStack2, 0, 8, false)) {
                 return ItemStack.EMPTY;
             }
             if (itemStack2.isEmpty()) {
