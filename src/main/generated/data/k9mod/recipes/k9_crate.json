@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "item": "minecraft:oak_planks"
+    },
+    "M": {
+      "item": "minecraft:minecart"
+    },
+    "S": {
+      "item": "minecraft:stripped_oak_wood"
+    },
+    "W": {
+      "item": "k9mod:k9_wrench"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "LWL",
+    "SMS"
+  ],
+  "result": {
+    "item": "k9mod:k9_crate"
+  },
+  "show_notification": true
+}

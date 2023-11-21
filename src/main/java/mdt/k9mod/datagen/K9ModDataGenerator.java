@@ -3,6 +3,7 @@ package mdt.k9mod.datagen;
 import mdt.k9mod.block.BlockInit;
 import mdt.k9mod.datagen.datagen_providers.K9ModLanguageProvider;
 import mdt.k9mod.datagen.datagen_providers.K9ModModelProvider;
+import mdt.k9mod.datagen.datagen_providers.K9ModRecipeProvider;
 import mdt.k9mod.datagen.datagen_providers.K9ModSoundProvider;
 import mdt.k9mod.item.ItemGroupInit;
 import mdt.k9mod.item.ItemInit;
@@ -10,6 +11,10 @@ import mdt.k9mod.sounds.SoundsInit;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
 
 import java.util.concurrent.CompletableFuture;
@@ -18,6 +23,7 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
+        generateRecipes(pack);
         generateLanguages(pack);
         generateBlockModels(pack);
         generateSoundData(pack);
@@ -42,6 +48,75 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
             k9ModModelProvider.registerSimpleBlock(BlockInit.K9_CRATE);
             //k9ModModelProvider.registerDirectionalBlock(BlockInit.SUM_DIRECTIONAL_BLOCK);
             return k9ModModelProvider;
+        }));
+    }
+
+    public void generateRecipes(FabricDataGenerator.Pack pack) {
+        pack.addProvider(((output, registriesFuture) -> {
+            K9ModRecipeProvider k9ModRecipeProvider = new K9ModRecipeProvider(output);
+            k9ModRecipeProvider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, ItemInit.K9_WRENCH, 1)
+                    .pattern(" R ")
+                    .pattern("IAR")
+                    .pattern("TI ")
+                    .input('R', Items.REPEATER)
+                    .input('I', Items.IRON_INGOT)
+                    .input('A', Items.IRON_AXE)
+                    .input('T', Items.REDSTONE_TORCH)
+                    .criterion(FabricRecipeProvider.hasItem(Items.REPEATER),
+                            FabricRecipeProvider.conditionsFromItem(Items.REPEATER))
+                    .criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
+                            FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
+                    .criterion(FabricRecipeProvider.hasItem(Items.IRON_AXE),
+                            FabricRecipeProvider.conditionsFromItem(Items.IRON_AXE))
+                    .criterion(FabricRecipeProvider.hasItem(Items.REDSTONE_TORCH),
+                            FabricRecipeProvider.conditionsFromItem(Items.REDSTONE_TORCH))
+            );
+            k9ModRecipeProvider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, BlockInit.K9_CRATE, 1)
+                    .pattern("SSS")
+                    .pattern("LWL")
+                    .pattern("SMS")
+                    .input('S', Items.STRIPPED_OAK_WOOD)
+                    .input('L', Items.OAK_PLANKS)
+                    .input('W', ItemInit.K9_WRENCH)
+                    .input('M', Items.MINECART)
+                    .criterion(FabricRecipeProvider.hasItem(Items.STRIPPED_OAK_WOOD),
+                            FabricRecipeProvider.conditionsFromItem(Items.STRIPPED_OAK_WOOD))
+                    .criterion(FabricRecipeProvider.hasItem(Items.OAK_PLANKS),
+                            FabricRecipeProvider.conditionsFromItem(Items.OAK_PLANKS))
+                    .criterion(FabricRecipeProvider.hasItem(ItemInit.K9_WRENCH),
+                            FabricRecipeProvider.conditionsFromItem(ItemInit.K9_WRENCH))
+                    .criterion(FabricRecipeProvider.hasItem(Items.MINECART),
+                            FabricRecipeProvider.conditionsFromItem(Items.MINECART))
+            );
+            k9ModRecipeProvider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, ItemInit.K9_BONE, 1)
+                    .pattern("III")
+                    .pattern("IBI")
+                    .pattern("III")
+                    .input('I', Items.IRON_INGOT)
+                    .input('B', Items.BONE)
+                    .criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
+                            FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
+                    .criterion(FabricRecipeProvider.hasItem(Items.BONE),
+                            FabricRecipeProvider.conditionsFromItem(Items.BONE))
+            );
+            k9ModRecipeProvider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, ItemInit.K9_LITHIUM_CELL, 1)
+                    .pattern("IAI")
+                    .pattern("OCO")
+                    .pattern("IAI")
+                    .input('I', Items.IRON_INGOT)
+                    .input('O', Items.OBSIDIAN)
+                    .input('A', Items.COAL)
+                    .input('C', Items.COPPER_INGOT)
+                    .criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
+                            FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
+                    .criterion(FabricRecipeProvider.hasItem(Items.OBSIDIAN),
+                            FabricRecipeProvider.conditionsFromItem(Items.OBSIDIAN))
+                    .criterion(FabricRecipeProvider.hasItem(Items.COAL),
+                            FabricRecipeProvider.conditionsFromItem(Items.COAL))
+                    .criterion(FabricRecipeProvider.hasItem(Items.COPPER_INGOT),
+                            FabricRecipeProvider.conditionsFromItem(Items.COPPER_INGOT))
+            );
+            return k9ModRecipeProvider;
         }));
     }
 
