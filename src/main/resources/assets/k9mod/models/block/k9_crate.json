@@ -2,9 +2,9 @@
   "credit": "Made by Loqor",
   "parent" : "block/cube_all",
   "textures": {
-    "0": "k9mod:block/k9_crate_side",
-    "1": "block/oak_planks",
-    "particle": "k9mod:block/k9_crate_side"
+    "0": "k9mod:block/k9_crate_siding",
+    "1": "k9mod:block/k9_crate_topping",
+    "particle": "k9mod:block/k9_crate_siding"
   },
   "elements": [
     {   "from": [ 0, 0, 0 ],
