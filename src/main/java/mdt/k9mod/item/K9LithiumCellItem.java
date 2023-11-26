@@ -38,6 +38,12 @@ public class K9LithiumCellItem extends Item {
     }
 
     @Override
+    public void onCraft(ItemStack stack, World world, PlayerEntity player) {
+        stack.getOrCreateNbt().putInt(BATTERY_KEY, 10);
+        super.onCraft(stack, world, player);
+    }
+
+    @Override
     public ItemStack getDefaultStack() {
         ItemStack itemStack = new ItemStack(this);
         itemStack.getOrCreateNbt().putInt(BATTERY_KEY, 10);

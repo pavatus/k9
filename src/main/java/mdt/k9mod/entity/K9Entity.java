@@ -219,7 +219,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
             this.songPlaying = false;
             this.songSource = null;
         }
-        if (!this.getWorld().isClient) {
+        if (!this.getWorld().isClient()) {
             int amountOfCells = 0;
             int additiveValue = 0;
             int d = 0;
@@ -280,7 +280,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
 
         this.setAiDisabled(this.isTamed() && (this.getHealth() <= 10.0f || this.getBatteryLevel() <= 0));
 
-        if (!this.getWorld().isClient) {
+        if (!this.getWorld().isClient()) {
             Inventory inventory = this;
             BlockPos bpos = new BlockPos(this.getBlockPos().getX(), this.getBlockPos().getY() - 1, this.getBlockPos().getZ());
             // check if hopper below
@@ -411,7 +411,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
             return false;
         }
         Entity entity = source.getAttacker();
-        if (this.getWorld().isClient) {
+        if (this.getWorld().isClient()) {
             this.setSitting(false);
         }
         if (entity != null && !(entity instanceof PlayerEntity) && !(entity instanceof PersistentProjectileEntity)) {
@@ -450,7 +450,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
         Item item = itemStack.getItem();
-        if (this.getWorld().isClient) {
+        if (this.getWorld().isClient()) {
             boolean bl = this.isOwner(player) || this.isTamed() || itemStack.isOf(ItemInit.K9_BONE) && !this.isTamed() && !this.hasAngerTime();
             return bl ? ActionResult.CONSUME : ActionResult.PASS;
         }
