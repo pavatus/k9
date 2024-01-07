@@ -1,6 +1,30 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
+    "has_iron_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:iron_ingot"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_k9_lithium_cell": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "k9mod:k9_lithium_cell"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_k9_wrench": {
       "conditions": {
         "items": [
@@ -13,36 +37,12 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_minecart": {
+    "has_string": {
       "conditions": {
         "items": [
           {
             "items": [
-              "minecraft:minecart"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_oak_planks": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "minecraft:oak_planks"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_stripped_oak_wood": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "minecraft:stripped_oak_wood"
+              "minecraft:string"
             ]
           }
         ]
@@ -51,23 +51,23 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "k9mod:k9_crate"
+        "recipe": "k9mod:k9_wristband"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_stripped_oak_wood",
-      "has_oak_planks",
+      "has_iron_ingot",
+      "has_string",
       "has_k9_wrench",
-      "has_minecart",
+      "has_k9_lithium_cell",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "k9mod:k9_crate"
+      "k9mod:k9_wristband"
     ]
   },
   "sends_telemetry_event": false

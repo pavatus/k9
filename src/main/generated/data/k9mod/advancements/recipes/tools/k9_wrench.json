@@ -58,11 +58,11 @@
   },
   "requirements": [
     [
-      "has_the_recipe",
       "has_repeater",
       "has_iron_ingot",
       "has_iron_axe",
-      "has_redstone_torch"
+      "has_redstone_torch",
+      "has_the_recipe"
     ]
   ],
   "rewards": {

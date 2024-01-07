@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "k9mod:k9_lithium_cell"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "W": {
+      "item": "k9mod:k9_wrench"
+    }
+  },
+  "pattern": [
+    "ISI",
+    "SWS",
+    "LSL"
+  ],
+  "result": {
+    "item": "k9mod:k9_wristband"
+  },
+  "show_notification": true
+}

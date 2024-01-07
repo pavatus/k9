@@ -2,15 +2,12 @@ package mdt.k9mod.block;
 
 import mdt.k9mod.entity.EntityInit;
 import mdt.k9mod.entity.K9Entity;
-import mdt.k9mod.item.ItemInit;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -19,8 +16,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-
-import java.util.UUID;
 
 public class K9CrateBlock extends Block {
     public K9CrateBlock(Settings settings) {

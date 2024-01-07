@@ -117,6 +117,23 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
                     .criterion(FabricRecipeProvider.hasItem(Items.COPPER_INGOT),
                             FabricRecipeProvider.conditionsFromItem(Items.COPPER_INGOT))
             );
+            k9ModRecipeProvider.addShapedRecipe(ShapedRecipeJsonBuilder.create(RecipeCategory.TOOLS, ItemInit.K9_WRISTBAND, 1)
+                    .pattern("ISI")
+                    .pattern("SWS")
+                    .pattern("LSL")
+                    .input('I', Items.IRON_INGOT)
+                    .input('S', Items.STRING)
+                    .input('W', ItemInit.K9_WRENCH)
+                    .input('L', ItemInit.K9_LITHIUM_CELL)
+                    .criterion(FabricRecipeProvider.hasItem(Items.IRON_INGOT),
+                            FabricRecipeProvider.conditionsFromItem(Items.IRON_INGOT))
+                    .criterion(FabricRecipeProvider.hasItem(Items.STRING),
+                            FabricRecipeProvider.conditionsFromItem(Items.STRING))
+                    .criterion(FabricRecipeProvider.hasItem(ItemInit.K9_WRENCH),
+                            FabricRecipeProvider.conditionsFromItem(ItemInit.K9_WRENCH))
+                    .criterion(FabricRecipeProvider.hasItem(ItemInit.K9_LITHIUM_CELL),
+                            FabricRecipeProvider.conditionsFromItem(ItemInit.K9_LITHIUM_CELL))
+            );
             return k9ModRecipeProvider;
         }));
     }
@@ -154,6 +171,7 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
         k9ModLanguageProvider.addTranslation(ItemInit.K9_LITHIUM_CELL, "Lithium Cell");
         k9ModLanguageProvider.addTranslation(ItemGroupInit.K9_GROUP, "K9 Mod");
         k9ModLanguageProvider.addTranslation(BlockInit.K9_CRATE, "K9 Crate");
+        k9ModLanguageProvider.addTranslation(ItemInit.K9_WRISTBAND, "K9 Wristband");
 
         return k9ModLanguageProvider;
     }
@@ -173,6 +191,7 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
         k9ModLanguageProvider.addTranslation(ItemInit.K9_LITHIUM_CELL, "Le Lithium Cell");
         k9ModLanguageProvider.addTranslation(ItemGroupInit.K9_GROUP, "Le K9 Mod");
         k9ModLanguageProvider.addTranslation(BlockInit.K9_CRATE, "Le K9 Crate");
+        k9ModLanguageProvider.addTranslation(ItemInit.K9_WRISTBAND, "Le K9 Wristband");
 
         return k9ModLanguageProvider;
     }
@@ -192,6 +211,7 @@ public class K9ModDataGenerator implements DataGeneratorEntrypoint {
         k9ModLanguageProvider.addTranslation(ItemInit.K9_LITHIUM_CELL, "Power Celle");
         k9ModLanguageProvider.addTranslation(ItemGroupInit.K9_GROUP, "K9 Moede");
         k9ModLanguageProvider.addTranslation(BlockInit.K9_CRATE, "K9 Boxe");
+        k9ModLanguageProvider.addTranslation(ItemInit.K9_WRISTBAND, "K9 Wristbande");
 
         return k9ModLanguageProvider;
     }

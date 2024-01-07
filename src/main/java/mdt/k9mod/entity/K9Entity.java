@@ -115,7 +115,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(1, new K9Entity.K9EscapeDangerGoal(1.5));
         this.goalSelector.add(2, new SitGoal(this));
-        this.goalSelector.add(3, new TemptGoal(this, 1.1, Ingredient.ofItems(ItemInit.K9_BONE), false));
+        this.goalSelector.add(3, new TemptGoal(this, 1.1, Ingredient.ofItems(ItemInit.K9_WRISTBAND), false));
         this.goalSelector.add(4, new PounceAtTargetGoal(this, 0.4f));
         this.goalSelector.add(5, new MeleeAttackGoal(this, 1.0, true));
         this.goalSelector.add(5, new FollowOwnerGoal(this, 1.0, 10.0f, 2.0f, false));
@@ -615,10 +615,6 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         return new Vec3d(0.0, 0.6f * this.getStandingEyeHeight(), this.getWidth() * 0.4f);
     }
 
-    @Override
-    protected Vector3f getPassengerAttachmentPos(Entity passenger, EntityDimensions dimensions, float scaleFactor) {
-        return new Vector3f(0.0f, dimensions.height - 0.03125f * scaleFactor, -0.0625f * scaleFactor);
-    }
 
     public static boolean canSpawn(EntityType<K9Entity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
         return world.getBlockState(pos.down()).isIn(BlockTags.WOLVES_SPAWNABLE_ON) && K9Entity.isLightLevelValidForNaturalSpawn(world, pos);
