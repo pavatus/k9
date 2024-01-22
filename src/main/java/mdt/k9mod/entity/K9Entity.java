@@ -86,7 +86,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     @Nullable
     private UUID angryAt;
 
-    public K9Entity(EntityType<? extends K9Entity> entityType, World world) {
+    public K9Entity(EntityType<? extends TameableEntity> entityType, World world) {
         super(entityType, world);
         this.setTamed(false);
         this.setPathfindingPenalty(PathNodeType.POWDER_SNOW, -1.0f);
@@ -130,7 +130,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
         this.targetSelector.add(8, new UniversalAngerGoal<>(this, true));
     }
     public static DefaultAttributeContainer.Builder createK9Attributes() {
-        return MobEntity.createMobAttributes().add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3f).add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2.0);
+        return MobEntity.createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 40.0).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.3f).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0);
     }
 
     @Override
@@ -437,13 +437,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     @Override
     public void setTamed(boolean tamed) {
         super.setTamed(tamed);
-        if (tamed) {
-            this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(40.0);
-            this.setHealth(40.0f);
-        } else {
-            this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(16.0);
-        }
-        this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(5.0);
+        this.setHealth(tamed ? 40.0f : 16.0f);
     }
 
     @Override
