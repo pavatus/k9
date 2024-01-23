@@ -18,7 +18,6 @@ public class K9modClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
-		entityAttributeRegister();
 		entityRenderRegister();
 		handledScreenRegister();
 		//K9_NET_CHANNEL.registerClientbound(PacketInit.K9Battery.class, (message, access) -> {
@@ -28,10 +27,6 @@ public class K9modClient implements ClientModInitializer {
 
 	public void entityRenderRegister() {
 		EntityRendererRegistry.register(EntityInit.K9_ENTITY_TYPE, K9EntityRenderer::new);
-	}
-
-	public void entityAttributeRegister() {
-		FabricDefaultAttributeRegistry.register(EntityInit.K9_ENTITY_TYPE, K9Entity.createK9Attributes());
 	}
 
 	public void handledScreenRegister() {

@@ -86,7 +86,7 @@ public class K9Entity extends TameableEntity implements Angerable, NamedScreenHa
     @Nullable
     private UUID angryAt;
 
-    public K9Entity(EntityType<? extends TameableEntity> entityType, World world) {
+    public K9Entity(EntityType<? extends K9Entity> entityType, World world) {
         super(entityType, world);
         this.setTamed(false);
         this.setPathfindingPenalty(PathNodeType.POWDER_SNOW, -1.0f);
