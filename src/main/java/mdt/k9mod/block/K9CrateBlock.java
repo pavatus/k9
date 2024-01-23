@@ -29,7 +29,7 @@ public class K9CrateBlock extends Block {
         world.addParticle(ParticleTypes.TOTEM_OF_UNDYING, pos.getX() + Random.create().nextBetween(1, 2), pos.getY() + Random.create().nextBetween(1, 5), pos.getZ() + Random.create().nextBetween(1, 2), 0, 1, 0);
         world.addParticle(ParticleTypes.TOTEM_OF_UNDYING, pos.getX() + Random.create().nextBetween(1, 2), pos.getY() + Random.create().nextBetween(1, 5), pos.getZ() + Random.create().nextBetween(1, 2), 0, 1, 0);
         world.addParticle(ParticleTypes.TOTEM_OF_UNDYING, pos.getX() + Random.create().nextBetween(1, 2), pos.getY() + Random.create().nextBetween(1, 5), pos.getZ() + Random.create().nextBetween(1, 2), 0, 1, 0);
-        K9Entity k9Entity = new K9Entity(EntityInit.K9_ENTITY_TYPE, world);
+        K9Entity k9Entity = EntityInit.K9_ENTITY_TYPE.create(world);
         if(k9Entity != null) {
             world.spawnEntity(k9Entity);
             k9Entity.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5, 0, 0);
